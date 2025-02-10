@@ -14,7 +14,21 @@ struct Color {
 	}
 	void Set(float _r, float _g, float _b, float _a = 255.f) { r = _r; g = _g; b = _b; a = _a; }
 	void Set(Color color) { r = color.r; g = color.g; b = color.b; a = color.a; }
- // TODO: Add operator overloads and clamp
+ 
+	bool Valid() {
+		return (!(r > 255) || !(r < 0)) || (!(g > 255)||!(g < 0)) || (!(b>255) || !(b<0)) || (!(a > 255) || !(a<0));
+		} // unlikely to work - programmed on phone :(
+	
+	bool Valid(float z) {
+		return (z < 255) && (z > 0);
+		}
+	
+	void Clamp() {
+			if (Valid()) { return; }
+			r = Valid(r);
+		}
+	
+	// TODO: Add operator overloads and clamp
 };
 
 struct Vec3 {
