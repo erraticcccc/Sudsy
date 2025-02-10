@@ -14,7 +14,7 @@ struct Color {
 	}
 	void Set(float _r, float _g, float _b, float _a = 255.f) { r = _r; g = _g; b = _b; a = _a; }
 	void Set(Color color) { r = color.r; g = color.g; b = color.b; a = color.a; }
-
+ // TODO: Add operator overloads and clamp
 };
 
 struct Vec3 {
