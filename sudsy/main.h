@@ -16,7 +16,7 @@ struct Color {
 	void Set(Color color) { r = color.r; g = color.g; b = color.b; a = color.a; }
  
 	bool Valid() {
-		return (!(r > 255) || !(r < 0)) || (!(g > 255)||!(g < 0)) || (!(b>255) || !(b<0)) || (!(a > 255) || !(a<0));
+		return (!(r > 255) && !(r < 0)) && (!(g > 255) && !(g < 0)) && (!(b>255) && !(b<0)) && (!(a > 255) && !(a<0));
 		} // unlikely to work - programmed on phone :(
 	
 	bool Valid(float z) {
@@ -25,10 +25,29 @@ struct Color {
 	
 	void Clamp() {
 			if (Valid()) { return; }
-			r = Valid(r);
+			if (!Valid(r)) {
+				r > 255 ? r -= 255 : r = 255 - r;
+			}
+			if (!Valid(g)) {
+				g > 255 ? g -= 255 : g = 255 - g;
+			}
+			if (!Valid(b)) {
+				b > 255 ? b -= 255 : b = 255 - b;
+			}
+			if (!Valid(a)) {
+				a > 255 ? a -= 255 : a = 255 - a;
+			}
 		}
 	
 	// TODO: Add operator overloads and clamp
+		Color operator=(Color other) {
+			Set(other);
+		}
+		Color operator+(Color other) {
+			Color n(r + other.r, g + other.g, b + other.b, a + other.a);
+			n.Clamp();
+			return n;
+		}
 };
 
 struct Vec3 {
@@ -53,6 +72,7 @@ struct Vec2 {
 
 // Used as a base class for all objects, will be used for parent/child relationships
 class Sudject {
+	virtual bool Valid() = 0;
 	int sid; // used for render order and identification
 };
 
