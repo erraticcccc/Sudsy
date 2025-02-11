@@ -17,7 +17,7 @@ struct Color {
  
 	bool Valid() {
 		return (!(r > 255) && !(r < 0)) && (!(g > 255) && !(g < 0)) && (!(b>255) && !(b<0)) && (!(a > 255) && !(a<0));
-		} // unlikely to work - programmed on phone :(
+	} // unlikely to work - programmed on phone :(
 	
 	bool Valid(float z) {
 		return (z < 255) && (z > 0);
@@ -40,14 +40,14 @@ struct Color {
 		}
 	
 	// TODO: Add operator overloads and clamp
-		Color operator=(Color other) {
-			Set(other);
-		}
-		Color operator+(Color other) {
-			Color n(r + other.r, g + other.g, b + other.b, a + other.a);
-			n.Clamp();
-			return n;
-		}
+	void operator=(Color other) {
+		Set(other);
+	}
+	Color operator+(Color other) {
+		Color n(r + other.r, g + other.g, b + other.b, a + other.a);
+		n.Clamp();
+		return n;
+	}
 };
 
 struct Vec3 {
@@ -58,6 +58,11 @@ struct Vec3 {
 	Vec3(float _x, float _y, float _z) {
 		x = _x; y = _y; z = _z;
 	}
+};
+
+class Drawable {
+public:
+	void Draw() { return; } // Meant to be overridden
 };
 
 struct Vec2 {
@@ -71,17 +76,79 @@ struct Vec2 {
 };
 
 // Used as a base class for all objects, will be used for parent/child relationships
-class Sudject {
-	virtual bool Valid() = 0;
+class Sudject : public Drawable {
 	int sid; // used for render order and identification
+	bool visible;
+public:
+	Sudject() {
+		// Somehow get last created Sudject/Object or create managing vector of some sort
+	}
+	Sudject* parent;
+	std::vector <Sudject*> children;
+	Sudject* GetParent() {
+		return parent;
+	}
+	std::vector <Sudject*> GetChildren() {
+		return children;
+	}
+	Sudject* GetChild(int index) {
+		return children[index];
+	}
+	void AddChild(Sudject* child) {
+		children.push_back(child);
+	}
+	bool Valid() { return true; }
+	void SetVisible(bool vis) { visible = vis; }
+	bool IsVisible() { return visible; }
 };
 
-Color COLOR_WHITE = Color(255.f, 255.f, 255.f, 255.f);
-Color COLOR_BLACK = Color(0.f, 0.f, 0.f, 255.f);
+inline std::vector <Sudject*> sudjects;
+
+namespace PreDef {
+	inline Color COLOR_WHITE = Color(255.f, 255.f, 255.f, 255.f);
+	inline Color COLOR_BLACK = Color(0.f, 0.f, 0.f, 255.f);
+}
+
+namespace Shapes {
+	struct Line {
+		Vec2 start, end;
+		float thickness;
+		Color color;
+	};
+	struct Rectangle {
+		Vec2 start, end;
+		float linethickness;
+		Color color;
+		bool filled;
+	};
+	struct Circle {
+		Vec2 center;
+		float linethickness;
+		float radius;
+		Color color;
+		bool filled;
+	};
+	struct Triangle {
+		Vec2 a, b, c;
+		float linethickness;
+		Color color;
+		bool filled;
+	};
+}
+
 
 namespace sudsy
 {
 	// Sudsy is a DirectX wrapper that allows you to create all of the below objects within any directx application
+	// Not really going to be useful for the time, only going to be making DX9 based
+	enum DX {
+		DX9,
+		DX10,
+		DX11,
+		DX12
+	};
+	class Hook;
+	void Initialize(DX dxversion);
 	class Shader;
 	class Text; // Used in basically every class
 	class Button;

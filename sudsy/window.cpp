@@ -52,9 +52,10 @@ namespace sudsy
 		// Render window
 	}
 
-	void Window::SetTitle(std::string title)
+	void Window::SetTitle(sudsy::Text title)
 	{
 		// Set window title
+		this->title = title;
 	}
 
 	void Window::SetSize(int width, int height)
@@ -117,95 +118,5 @@ namespace sudsy
 	void Window::SetColor(Color col)
 	{
 		color = col;
-	}
-
-	void Window::SetFont(std::string font)
-	{
-		text.SetFont(font);
-	}
-
-	void Window::SetFontSize(int size)
-	{
-		text.SetFontSize(size);
-	}
-
-	void Window::SetFontColor(float r, float g, float b)
-	{
-		text.SetFontColor(Color(r, g, b));
-	}
-
-	void Window::SetFontColor(Color col)
-	{
-		text.SetFontColor(col);
-	}
-
-	void Window::SetFontShadow(bool shadow)
-	{
-		text.SetFontShadow(shadow);
-	}
-
-	void Window::SetFontOutline(bool outline)
-	{
-		text.SetFontOutline(outline);
-	}
-
-	void Window::SetFontCentered(bool centered)
-	{
-		text.SetFontCentered(centered);
-	}
-
-	void Window::SetFontRightAligned(bool rightaligned)
-	{
-	}
-
-	void Window::SetFontFlags(int flags)
-	{
-	}
-
-	void Window::SetFontOffset(int x, int y)
-	{
-	}
-
-	void Window::SetFontShadowOffset(int x, int y)
-	{
-	}
-
-	void Window::SetFontOutlineOffset(int x, int y)
-	{
-	}
-
-	void Window::SetFontCenteredOffset(int x, int y)
-	{
-	}
-
-	void Window::SetFontRightAlignedOffset(int x, int y)
-	{
-	}
-
-	void Window::SetFontShadowColor(float r, float g, float b)
-	{
-		text.SetFontShadowColor(Color(r, g, b));
-	}
-
-	void Window::SetFontShadowColor(Color col)
-	{
-		text.SetFontShadowColor(col);
-	}
-
-	void Window::SetFontOutlineColor(float r, float g, float b)
-	{
-		text.SetFontOutlineColor(Color(r, g, b));
-	}
-
-	void Window::SetFontOutlineColor(Color col)
-	{
-		text.SetFontOutlineColor(col);
-	}
-
-	void Window::SetFontShadowBlur(float blur)
-	{
-	}
-	void Window::SetFontOutlineSpreadThickness(float thickness)
-	{
 	}
 }

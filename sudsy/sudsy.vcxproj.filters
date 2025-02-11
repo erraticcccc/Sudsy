@@ -27,22 +27,37 @@
     <Filter Include="Source Files\Button">
       <UniqueIdentifier>{9700c303-59a9-4f2a-9567-0d0b6fce5439}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Extern">
+      <UniqueIdentifier>{56a7c912-9884-45ac-aff2-4d796ad79b36}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Misc">
+      <UniqueIdentifier>{f424cd0a-d2f0-4145-ba0d-a351c1140b4f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Misc">
+      <UniqueIdentifier>{f7bc9512-33ed-4165-bdbe-b15898d4a497}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="window.h">
       <Filter>Header Files\Window</Filter>
-    </ClInclude>
-    <ClInclude Include="common.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="main.h">
-      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="text.h">
       <Filter>Header Files\Text</Filter>
     </ClInclude>
     <ClInclude Include="button.h">
       <Filter>Header Files\Button</Filter>
+    </ClInclude>
+    <ClInclude Include="Sudsy.h">
+      <Filter>Extern</Filter>
+    </ClInclude>
+    <ClInclude Include="main.h">
+      <Filter>Header Files\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="common.h">
+      <Filter>Header Files\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="Hook.h">
+      <Filter>Header Files\Misc</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -54,6 +69,12 @@
     </ClCompile>
     <ClCompile Include="button.cpp">
       <Filter>Source Files\Button</Filter>
+    </ClCompile>
+    <ClCompile Include="Hook.cpp">
+      <Filter>Source Files\Misc</Filter>
+    </ClCompile>
+    <ClCompile Include="Sudsy.cpp">
+      <Filter>Extern</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

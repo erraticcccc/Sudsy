@@ -16,7 +16,7 @@ namespace sudsy
 		void Create();
 		void Destroy();
 		void Render();
-		void SetTitle(std::string title);
+		void SetTitle(sudsy::Text title);
 		void SetSize(int width, int height);
 		void SetPosition(int x, int y);
 		void SetVisible(bool visible);
@@ -33,7 +33,7 @@ namespace sudsy
 		void SetText(Text txt);
 		bool IsMouseInWindow();
 	private:
-		std::string title;
+		sudsy::Text title;
 		int width;
 		int height;
 		int x;
@@ -49,7 +49,5 @@ namespace sudsy
 		int maxwidth;
 		int maxheight;
 		Color color;
-		std::vector <sudsy::Text> text;
-		std::vector <sudsy::Button> buttons;
 	};
 }
