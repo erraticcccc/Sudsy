@@ -9,8 +9,7 @@ Current Functionality:
 - General ideas for other classes have been put into the main namespace (sudsy::)
 - General structure for how a project using Sudsy would look
 ```c++
- //
-  int main()/MainThread() {
+int main()/MainThread() {
     Sudsy::Init();
     Sudsy::Window w("Title");
     Sudsy::Text* t = w.AddText("Text");
@@ -25,7 +24,7 @@ Current Functionality:
     }
     Sudsy::Destroy();
     // Easy cleanup
-  }
+}
 ```
 
 
