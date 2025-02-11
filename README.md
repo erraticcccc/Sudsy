@@ -1,7 +1,7 @@
 #include "Sudsy.h"
 #pragma comment(lib,"sudsy.lib")
 
-Add this to any exe or dll, and you have access to an array of different rendering capabilities within an DirectX application.
+Add this to any exe or dll, and you have access to an array of different rendering capabilities within any DirectX application.
 
 Current Functionality:
 - Doesn't do anything yet.
