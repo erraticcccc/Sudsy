@@ -1,6 +1,6 @@
 #pragma once
 
-#include "text.h"
+#include "Text/text.h"
 
 namespace sudsy {
 	class Button : public Sudject {

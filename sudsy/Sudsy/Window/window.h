@@ -1,6 +1,5 @@
 #pragma once
-#include "text.h"
-#include "button.h"
+#include "Button/button.h"
 
 namespace sudsy
 {

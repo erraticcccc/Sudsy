@@ -16,30 +16,32 @@ struct Color {
 	void Set(Color color) { r = color.r; g = color.g; b = color.b; a = color.a; }
  
 	bool Valid() {
-		return (!(r > 255) && !(r < 0)) && (!(g > 255) && !(g < 0)) && (!(b>255) && !(b<0)) && (!(a > 255) && !(a<0));
-	} // unlikely to work - programmed on phone :(
+		return (r >= 0.0f && r <= 255.0f) &&
+			(g >= 0.0f && g <= 255.0f) &&
+			(b >= 0.0f && b <= 255.0f) &&
+			(a >= 0.0f && a <= 255.0f);
+	}
 	
 	bool Valid(float z) {
-		return (z < 255) && (z > 0);
-		}
+		return (z < 255.f) && (z > 0.f);
+	}
 	
 	void Clamp() {
-			if (Valid()) { return; }
-			if (!Valid(r)) {
-				r > 255 ? r -= 255 : r = 255 - r;
-			}
-			if (!Valid(g)) {
-				g > 255 ? g -= 255 : g = 255 - g;
-			}
-			if (!Valid(b)) {
-				b > 255 ? b -= 255 : b = 255 - b;
-			}
-			if (!Valid(a)) {
-				a > 255 ? a -= 255 : a = 255 - a;
-			}
+		if (Valid()) { return; }
+		if (!Valid(r)) {
+			r > 255 ? r -= 255 : r = 255 - r;
 		}
-	
-	// TODO: Add operator overloads and clamp
+		if (!Valid(g)) {
+			g > 255 ? g -= 255 : g = 255 - g;
+		}
+		if (!Valid(b)) {
+			b > 255 ? b -= 255 : b = 255 - b;
+		}
+		if (!Valid(a)) {
+			a > 255 ? a -= 255 : a = 255 - a;
+		}
+	}
+
 	void operator=(Color other) {
 		Set(other);
 	}
@@ -47,6 +49,14 @@ struct Color {
 		Color n(r + other.r, g + other.g, b + other.b, a + other.a);
 		n.Clamp();
 		return n;
+	}
+	Color operator-(Color other) {
+		Color n(r - other.r, g - other.g, b - other.b, a - other.a);
+		n.Clamp();
+		return n;
+	}
+	void Lerp(Color other) {
+
 	}
 };
 
@@ -60,10 +70,6 @@ struct Vec3 {
 	}
 };
 
-class Drawable {
-public:
-	void Draw() { return; } // Meant to be overridden
-};
 
 struct Vec2 {
 	float x, y;
@@ -75,16 +81,26 @@ struct Vec2 {
 	}
 };
 
+class Sudject;
+
+inline std::vector <Sudject*> sudjects;
+
 // Used as a base class for all objects, will be used for parent/child relationships
-class Sudject : public Drawable {
-	int sid; // used for render order and identification
+class Sudject {
 	bool visible;
-public:
-	Sudject() {
-		// Somehow get last created Sudject/Object or create managing vector of some sort
-	}
 	Sudject* parent;
 	std::vector <Sudject*> children;
+public:
+	Sudject() {
+		parent = nullptr;
+		visible = true;
+		sudjects.push_back(this);
+	}
+	Sudject(Sudject* p) {
+		parent = p;
+		visible = true;
+		sudjects.push_back(this);
+	}
 	Sudject* GetParent() {
 		return parent;
 	}
@@ -97,17 +113,16 @@ public:
 	void AddChild(Sudject* child) {
 		children.push_back(child);
 	}
-	bool Valid() { return true; }
-	void SetVisible(bool vis) { visible = vis; }
 	bool IsVisible() { return visible; }
+	virtual bool Valid() = 0;
+	virtual void SetVisible(bool vis) = 0;
+	virtual void Draw() = 0;
 };
 
-inline std::vector <Sudject*> sudjects;
 
-namespace PreDef {
-	inline Color COLOR_WHITE = Color(255.f, 255.f, 255.f, 255.f);
-	inline Color COLOR_BLACK = Color(0.f, 0.f, 0.f, 255.f);
-}
+inline Color COLOR_WHITE = Color(255.f, 255.f, 255.f, 255.f);
+inline Color COLOR_BLACK = Color(0.f, 0.f, 0.f, 255.f);
+
 
 namespace Shapes {
 	struct Line {
@@ -148,7 +163,6 @@ namespace sudsy
 		DX12
 	};
 	class Hook;
-	void Initialize(DX dxversion);
 	class Shader;
 	class Text; // Used in basically every class
 	class Button;
@@ -163,4 +177,8 @@ namespace sudsy
 	class Tab;
 	class Panel;
 	class Window;
+	inline void Init(DX dxversion);
+	inline void Render();
+	inline void Destroy();
+	inline bool Active = false;
 }

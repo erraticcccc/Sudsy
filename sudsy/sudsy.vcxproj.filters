@@ -1,80 +1,66 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
-    </Filter>
-    <Filter Include="Header Files\Window">
-      <UniqueIdentifier>{3e65bcef-1b55-4caa-b7bc-d45ac68a2730}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Window">
-      <UniqueIdentifier>{f1ab3f7e-a2cc-4516-beff-4f812a7c1408}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Text">
-      <UniqueIdentifier>{90556663-b79f-4996-830a-f086f2a26a60}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Text">
-      <UniqueIdentifier>{750ce274-d85b-4807-ae31-c1fd3d40321c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Button">
-      <UniqueIdentifier>{f491bc58-d7cb-4365-af75-7583bcc3d83c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Button">
-      <UniqueIdentifier>{9700c303-59a9-4f2a-9567-0d0b6fce5439}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Extern">
       <UniqueIdentifier>{56a7c912-9884-45ac-aff2-4d796ad79b36}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Misc">
-      <UniqueIdentifier>{f424cd0a-d2f0-4145-ba0d-a351c1140b4f}</UniqueIdentifier>
+    <Filter Include="Classes">
+      <UniqueIdentifier>{79b63536-9cda-4cdc-9c25-1d839bbd61b3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Misc">
-      <UniqueIdentifier>{f7bc9512-33ed-4165-bdbe-b15898d4a497}</UniqueIdentifier>
+    <Filter Include="Includes">
+      <UniqueIdentifier>{2fdd01cb-b4c2-4458-8e22-c7040c1909ee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Classes\Button">
+      <UniqueIdentifier>{0089225a-edee-4024-802f-aea45b5c600f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Classes\Hook">
+      <UniqueIdentifier>{5aa74317-9ed2-4510-a80d-67ef8cd716ee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Classes\Text">
+      <UniqueIdentifier>{74ee44c6-60f3-4eea-b589-e99775640a6e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Classes\Window">
+      <UniqueIdentifier>{b83727e6-5e95-450b-9cda-a0dba617278b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="window.h">
-      <Filter>Header Files\Window</Filter>
-    </ClInclude>
-    <ClInclude Include="text.h">
-      <Filter>Header Files\Text</Filter>
-    </ClInclude>
-    <ClInclude Include="button.h">
-      <Filter>Header Files\Button</Filter>
-    </ClInclude>
-    <ClInclude Include="Sudsy.h">
+    <ClCompile Include="Sudsy\Sudsy.cpp">
       <Filter>Extern</Filter>
-    </ClInclude>
-    <ClInclude Include="main.h">
-      <Filter>Header Files\Misc</Filter>
-    </ClInclude>
-    <ClInclude Include="common.h">
-      <Filter>Header Files\Misc</Filter>
-    </ClInclude>
-    <ClInclude Include="Hook.h">
-      <Filter>Header Files\Misc</Filter>
-    </ClInclude>
+    </ClCompile>
+    <ClCompile Include="Sudsy\Button\button.cpp">
+      <Filter>Classes\Button</Filter>
+    </ClCompile>
+    <ClCompile Include="Sudsy\Hook\Hook.cpp">
+      <Filter>Classes\Hook</Filter>
+    </ClCompile>
+    <ClCompile Include="Sudsy\Text\text.cpp">
+      <Filter>Classes\Text</Filter>
+    </ClCompile>
+    <ClCompile Include="Sudsy\Window\window.cpp">
+      <Filter>Classes\Window</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="window.cpp">
-      <Filter>Source Files\Window</Filter>
-    </ClCompile>
-    <ClCompile Include="text.cpp">
-      <Filter>Source Files\Text</Filter>
-    </ClCompile>
-    <ClCompile Include="button.cpp">
-      <Filter>Source Files\Button</Filter>
-    </ClCompile>
-    <ClCompile Include="Hook.cpp">
-      <Filter>Source Files\Misc</Filter>
-    </ClCompile>
-    <ClCompile Include="Sudsy.cpp">
+    <ClInclude Include="Sudsy\Sudsy.h">
       <Filter>Extern</Filter>
-    </ClCompile>
+    </ClInclude>
+    <ClInclude Include="Sudsy\main.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="Sudsy\common.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="Sudsy\Button\button.h">
+      <Filter>Classes\Button</Filter>
+    </ClInclude>
+    <ClInclude Include="Sudsy\Hook\Hook.h">
+      <Filter>Classes\Hook</Filter>
+    </ClInclude>
+    <ClInclude Include="Sudsy\Text\text.h">
+      <Filter>Classes\Text</Filter>
+    </ClInclude>
+    <ClInclude Include="Sudsy\Window\window.h">
+      <Filter>Classes\Window</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
