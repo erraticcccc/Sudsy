@@ -25,6 +25,10 @@ Current Functionality:
     Sudsy::Destroy();
     // Easy cleanup
   }
+
+
+
+
 What I need to do next:
 - Add rendering context/tree (Choose how it iterates through objects to render them)
 - Finish class definitions
