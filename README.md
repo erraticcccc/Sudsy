@@ -8,7 +8,8 @@ Current Functionality:
 - Class definitions for Window, Button, Text, and Hook have been outlined.
 - General ideas for other classes have been put into the main namespace (sudsy::)
 - General structure for how a project using Sudsy would look
-  //
+```c++
+ //
   int main()/MainThread() {
     Sudsy::Init();
     Sudsy::Window w("Title");
@@ -25,7 +26,7 @@ Current Functionality:
     Sudsy::Destroy();
     // Easy cleanup
   }
-
+```
 
 
 
