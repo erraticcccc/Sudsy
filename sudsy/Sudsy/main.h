@@ -87,7 +87,7 @@ struct Vec2 {
 class Sudject;
 
 inline std::vector <Sudject*> sudjects;
-inline LPDIRECT3DDEVICE9 Sudevice;
+inline IDirect3DDevice9* Sudevice = nullptr;
 
 // Used as a base class for all objects, will be used for parent/child relationships
 class Sudject {
@@ -166,7 +166,9 @@ namespace Shapes {
 			if (!line || line == nullptr) return;
 			line->SetWidth(thickness);
 			D3DXVECTOR2 b[] = { D3DXVECTOR2(this->start.x, this->start.y), D3DXVECTOR2(this->end.x, this->end.y) };
+			line->Begin();
 			line->Draw(b, 2, D3DCOLOR_ARGB(color.a, color.r, color.g, color.b));
+			line->End();
 		}
 		void SetColor(Color color) {
 			this->color = color;

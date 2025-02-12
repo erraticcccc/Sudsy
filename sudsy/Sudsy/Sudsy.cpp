@@ -17,22 +17,20 @@ void sudsy::Init() {
 	d3dpp.SwapEffect = D3DSWAPEFFECT_DISCARD;
 	d3dpp.Windowed = TRUE;
 
-	IDirect3DDevice9* pDevice = nullptr;
-
-	pD3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, d3dpp.hDeviceWindow, D3DCREATE_SOFTWARE_VERTEXPROCESSING, &d3dpp, &pDevice);
+	pD3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, d3dpp.hDeviceWindow, D3DCREATE_SOFTWARE_VERTEXPROCESSING, &d3dpp, &Sudevice);
 		
-	if (!pDevice) {
+	if (!Sudevice) {
 		d3dpp.Windowed = FALSE;
-		pD3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, d3dpp.hDeviceWindow, D3DCREATE_SOFTWARE_VERTEXPROCESSING, &d3dpp, &pDevice);
+		pD3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, d3dpp.hDeviceWindow, D3DCREATE_SOFTWARE_VERTEXPROCESSING, &d3dpp, &Sudevice);
 	}
 
-	if (!pDevice) {
+	if (!Sudevice) {
 		pD3D->Release();
 		throw std::exception("Failed to create device");
 		return;
 	}
 
-	auto pVTable = *reinterpret_cast<void***>(pDevice);
+	auto pVTable = *reinterpret_cast<void***>(Sudevice);
 
 	// 3 fucking EndScenes: pEndScene (function location based off of vTable), oEndScene (original function), and HkEndScene (hook object)
 
@@ -43,6 +41,7 @@ void sudsy::Init() {
 }
 
 void sudsy::Render() {
+
 	std::sort(sudjects.begin(), sudjects.end(), [](Sudject* a, Sudject* b) {
 		int depthA = 0, depthB = 0;
 		for (Sudject* p = a; p->GetParent(); p = p->GetParent()) depthA++;
