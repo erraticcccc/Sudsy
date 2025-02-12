@@ -4,12 +4,11 @@
 
 void MainThread() {
 	
-	sudsy::Init();
-
 	Vec2 start(0, 0);
 	Vec2 end(100, 100);
-
 	auto line = Shapes::Line(start, end, 100, 100);
+	
+	sudsy::Init();
 
 	while (true) {
 		Sleep(10);

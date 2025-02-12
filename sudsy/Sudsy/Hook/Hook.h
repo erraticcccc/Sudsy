@@ -5,7 +5,7 @@ typedef unsigned char byte;
 
 namespace sudsy {
 	class Hook {
-		std::vector<byte> stolenBytes;
+		byte* stolenBytes;
 		bool Toggle;
 		byte* originalFunction;
 		byte* newFunction;
@@ -17,5 +17,6 @@ namespace sudsy {
 		void ToggleHook();
 		void SetTarget(void* func);
 		void SetReplacement(void* func);
+		byte* GetBytes();
 	};
 }

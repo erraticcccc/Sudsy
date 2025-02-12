@@ -3,7 +3,7 @@
 typedef HRESULT(__stdcall* EndScene)(IDirect3DDevice9* pDevice);
 EndScene oEndScene;
 
-void RenderScene();
+HRESULT __stdcall RenderScene(IDirect3DDevice9* pDevice);
 
 void sudsy::Init() {
 	IDirect3D9* pD3D = Direct3DCreate9(D3D_SDK_VERSION);
@@ -37,12 +37,9 @@ void sudsy::Init() {
 	// 3 fucking EndScenes: pEndScene (function location based off of vTable), oEndScene (original function), and HkEndScene (hook object)
 
 	sudsy::Hook HkEndScene(pVTable[42], &RenderScene);
+	oEndScene = (EndScene)HkEndScene.GetBytes();
 
 	HkEndScene.Init();
-
-	while (Active) {
-		Render();
-	}
 }
 
 void sudsy::Render() {
@@ -63,8 +60,8 @@ void sudsy::Destroy() {
 
 }
 
-void RenderScene() {
-
+HRESULT __stdcall RenderScene(IDirect3DDevice9* pDevice) {
 	sudsy::Render();
-
+	
+	return oEndScene(pDevice);
 }
