@@ -77,16 +77,25 @@ struct Vec3 {
 };
 
 
-struct Vec2 {
+struct Vec2
+{
 	float x, y;
+
 	Vec2() {
 		x = y = 0.f;
 	}
+
 	Vec2(float _x, float _y) {
 		x = _x; y = _y;
 	}
+
 	float distance(Vec2 other) {
 		return HYPOTENUSE(fabs(other.x - this->x), fabs(other.y - this->y));
+	}
+
+	D3DXVECTOR2 ToDirectX()
+	{
+		return D3DXVECTOR2(x, y);
 	}
 };
 
@@ -169,12 +178,23 @@ namespace Shapes {
 		void Draw() {
 			if (!Valid()) { return; }
 			if (!Sudevice) { return; }
-			line.x1 = start.x + (thickness/2);
-			line.x2 = start.y - (thickness / 2);
-			line.y1 = end.x + (thickness / 2);
-			line.y2 = end.y - (thickness / 2);
-			auto c = D3DCOLOR_ARGB(color.a,color.r,color.g,color.b);
-			Sudevice->Clear(1,&line,D3DCLEAR_TARGET,c,0,0);
+
+			static ID3DXLine* pLine = nullptr;
+
+			if (!pLine)
+				D3DXCreateLine(Sudevice, &pLine);
+
+			if (pLine)
+			{
+				pLine->SetWidth(this->thickness);
+
+				D3DXVECTOR2 points[2] = { this->start.ToDirectX(), this->end.ToDirectX() };
+
+				D3DCOLOR color = D3DCOLOR_ARGB(this->color.a, this->color.r, this->color.g, this->color.b);
+
+				pLine->Draw(points, 2, color);
+			}
+
 		}
 		void SetColor(Color color) {
 			this->color = color;
