@@ -88,23 +88,23 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
-    <IncludePath>$(DXSDK_DIR)Include\;C:\Users\erratic\source\repos\sudsy\sudsy\Sudsy;$(IncludePath)</IncludePath>
+    <IncludePath>$(DXSDK_DIR)Include\;$(SolutionDir)sudsy\Sudsy\;$(IncludePath)</IncludePath>
     <TargetName>$(ProjectName)_$(PlatformTarget)</TargetName>
     <LibraryPath>$(DXSDK_DIR)Lib\$(LibrariesArchitecture)\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
-    <IncludePath>$(DXSDK_DIR)Include\;C:\Users\erratic\source\repos\sudsy\sudsy\Sudsy;$(IncludePath)</IncludePath>
+    <IncludePath>$(DXSDK_DIR)Include\;$(SolutionDir)sudsy\Sudsy\;$(IncludePath)</IncludePath>
     <TargetName>$(ProjectName)_$(PlatformTarget)</TargetName>
     <LibraryPath>$(DXSDK_DIR)Lib\$(LibrariesArchitecture)\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(DXSDK_DIR)Include\;C:\Users\erratic\source\repos\sudsy\sudsy\Sudsy;$(IncludePath)</IncludePath>
+    <IncludePath>$(DXSDK_DIR)Include\;$(SolutionDir)sudsy\Sudsy\;$(IncludePath)</IncludePath>
     <TargetName>$(ProjectName)_$(PlatformTarget)</TargetName>
     <LibraryPath>$(DXSDK_DIR)Lib\$(LibrariesArchitecture)\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(DXSDK_DIR)Include\;C:\Users\erratic\source\repos\sudsy\sudsy\Sudsy;$(IncludePath)</IncludePath>
+    <IncludePath>$(DXSDK_DIR)Include\;$(SolutionDir)sudsy\Sudsy\;$(IncludePath)</IncludePath>
     <TargetName>$(ProjectName)_$(PlatformTarget)</TargetName>
     <LibraryPath>$(DXSDK_DIR)Lib\$(LibrariesArchitecture)\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>

@@ -29,11 +29,11 @@ void sudsy::Init(sudsy::Hook hk) {
 
 	auto pVTable = *reinterpret_cast<void***>(Sudevice);
 
-	oEndScene = (EndScene)hk.THook((BYTE*)pVTable[42], (BYTE*)&Render, 7);
+	oEndScene = (EndScene)hk.THook((BYTE*)pVTable[42], (BYTE*)&RenderScene, 7);
 }
 
 void sudsy::Render() {
-
+	if (sudjects.empty()) { return; }
 	std::sort(sudjects.begin(), sudjects.end(), [](Sudject* a, Sudject* b) {
 		int depthA = 0, depthB = 0;
 		for (Sudject* p = a; p->GetParent(); p = p->GetParent()) depthA++;
@@ -52,5 +52,8 @@ void sudsy::Destroy() {
 }
 
 HRESULT __stdcall RenderScene(IDirect3DDevice9* pDevice) {
+	Sudevice = pDevice;
+	sudsy::Render();
+
 	return oEndScene(pDevice);
 }

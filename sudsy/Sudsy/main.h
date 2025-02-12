@@ -1,6 +1,9 @@
 #pragma once
 #include "common.h"
 
+#define HYPOTENUSE(a,b) \
+		(sqrtf((a*a)+(b*b)))
+
 struct Color {
 	int r, g, b, a;
 
@@ -82,6 +85,9 @@ struct Vec2 {
 	Vec2(float _x, float _y) {
 		x = _x; y = _y;
 	}
+	float distance(Vec2 other) {
+		return HYPOTENUSE(fabs(other.x - this->x), fabs(other.y - this->y));
+	}
 };
 
 class Sudject;
@@ -127,7 +133,7 @@ public:
 inline Color COLOR_WHITE = Color(255, 255, 255, 255);
 inline Color COLOR_BLACK = Color(0, 0, 0, 255);
 
-struct Shape {
+struct Shape : public Sudject {
 	enum Type {
 		LINE,
 		RECTANGLE,
@@ -146,30 +152,29 @@ namespace Shapes {
 		Vec2 start, end;
 		float thickness;
 		Color color;
-		ID3DXLine* line = nullptr;
+		D3DRECT line;
 		Line() {
 			start = Vec2(0.f, 0.f);
 			end = Vec2(0.f, 0.f);
 			thickness = 1.f;
 			color = COLOR_WHITE;
-			D3DXCreateLine(Sudevice, &line);
 		}
 		Line(Vec2 s, Vec2 e, float t, Color c) {
 			start = s;
 			end = e;
 			thickness = t;
 			color = c;
-			D3DXCreateLine(Sudevice, &line);
 		}
 		Type GetType() { return LINE; }
 		void Draw() {
+			if (!Valid()) { return; }
 			if (!Sudevice) { return; }
-			if (!line || line == nullptr) { return; }
-			line->SetWidth(thickness);
-			D3DXVECTOR2 b[] = { D3DXVECTOR2(this->start.x, this->start.y), D3DXVECTOR2(this->end.x, this->end.y) };
-			line->Begin();
-			line->Draw(b, 2, D3DCOLOR_ARGB(color.a, color.r, color.g, color.b));
-			line->End();
+			line.x1 = start.x + (thickness/2);
+			line.x2 = start.y - (thickness / 2);
+			line.y1 = end.x + (thickness / 2);
+			line.y2 = end.y - (thickness / 2);
+			auto c = D3DCOLOR_ARGB(color.a,color.r,color.g,color.b);
+			Sudevice->Clear(1,&line,D3DCLEAR_TARGET,c,0,0);
 		}
 		void SetColor(Color color) {
 			this->color = color;
@@ -180,9 +185,11 @@ namespace Shapes {
 		void SetFilled(bool filled) {
 			// Not used
 		}
-		~Line() {
-			line->Release();
-			line = nullptr;
+		bool Valid() {
+			return start.distance(end) > 0;
+		}
+		void SetVisible(bool vis) {
+			visible = vis;
 		}
 	};
 	struct Rectangle : public Shape {
@@ -247,7 +254,7 @@ namespace sudsy
 	class Tab;
 	class Panel;
 	class Window;
-	void Init(Hook);
+	void Init(sudsy::Hook hk);
 	void Render();
 	void Destroy();
 	inline bool Active = false;

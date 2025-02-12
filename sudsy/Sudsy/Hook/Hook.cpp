@@ -4,10 +4,6 @@ namespace sudsy
 {
 	// Two args: Target function, which will be replaced, and the replacement function, which will replace the target function
 
-	Hook::~Hook()
-	{
-	}
-
 #ifdef _WIN32
 
 	BYTE* Hook::THook(BYTE* toHook, BYTE* from, int amount) {
@@ -39,7 +35,7 @@ namespace sudsy
 
 #elif _WIN64
 
-	BYTE* Hook::THook64(BYTE* toHook, BYTE* from, int amount) {
+	BYTE* Hook::THook(BYTE* toHook, BYTE* from, int amount) {
 		// to is the function you want to hook, from is the function
 		// that overrides "to".
 		if (amount < 13) return 0;

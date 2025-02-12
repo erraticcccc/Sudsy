@@ -4,6 +4,8 @@
 
 void MainThread() {
 
+	Shapes::Line line(Vec2(100,100),Vec2(1200,1200),50.f,Color(255,0,0,255));
+
 	sudsy::Hook hk;
 	sudsy::Init(hk);
 	while (true) {	Sleep(50);	}
