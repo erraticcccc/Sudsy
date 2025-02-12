@@ -4,6 +4,16 @@
 #define HYPOTENUSE(a,b) \
 		(sqrtf((a*a)+(b*b)))
 
+static int _clmp(int to, int max, int min) {
+	if (to > max) {
+		to -= max;
+	}
+	if (to < min) {
+		to = max - to;
+	}
+	return to;
+}
+
 struct Color {
 	int r, g, b, a;
 
@@ -42,14 +52,15 @@ struct Color {
 	}
 
 	void Clamp() {
-		r = std::clamp(r,0, 255);
-		g = std::clamp(g,0, 255);
-		b = std::clamp(b,0, 255);
-		a = std::clamp(a,0, 255);
+		r = _clmp(r, 255, 0);
+		g = _clmp(g, 255, 0);
+		b = _clmp(b, 255, 0);
+		a = _clmp(a, 255, 0);
 	}
 
-	void operator=(Color other) {
+	Color operator=(Color other) {
 		Set(other);
+		return *this;
 	}
 	Color operator+(Color other) {
 		Color n(r + other.r, g + other.g, b + other.b, a + other.a);
@@ -63,6 +74,9 @@ struct Color {
 	}
 	void Lerp(Color other) {
 
+	}
+	D3DCOLOR DirectX() {
+		return D3DCOLOR_ARGB(a, r, g, b);
 	}
 };
 
@@ -99,6 +113,11 @@ struct Vec2
 	}
 };
 
+struct _VTX {
+	float x, y, z, rwh;
+	DWORD col;
+};
+
 class Sudject;
 
 inline std::vector <Sudject*> sudjects;
@@ -130,8 +149,8 @@ public:
 	Sudject* GetChild(int index) {
 		return children[index];
 	}
-	void AddChild(Sudject* child) {
-		children.push_back(child);
+	void AddChild(Sudject& child) {
+		children.push_back(&child);
 	}
 	bool IsVisible() { return visible; }
 	virtual bool Valid() = 0;
@@ -161,7 +180,6 @@ namespace Shapes {
 		Vec2 start, end;
 		float thickness;
 		Color color;
-		D3DRECT line;
 		Line() {
 			start = Vec2(0.f, 0.f);
 			end = Vec2(0.f, 0.f);
@@ -190,6 +208,8 @@ namespace Shapes {
 
 				D3DXVECTOR2 points[2] = { this->start.ToDirectX(), this->end.ToDirectX() };
 
+				this->color.Clamp();
+
 				D3DCOLOR color = D3DCOLOR_ARGB(this->color.a, this->color.r, this->color.g, this->color.b);
 
 				pLine->Draw(points, 2, color);
@@ -213,17 +233,44 @@ namespace Shapes {
 		}
 	};
 	struct Rectangle : public Shape {
-		Vec2 start, end;
-		float linethickness;
-		Color color;
-		bool filled;
-		
+		Vec2 tl, tr, bl, br; // Top left, top right, bottom left, bottom right
+		float linethickness = 0.f; // only useful if unfilled/outline
+		Color color = COLOR_WHITE, outlinecol = COLOR_WHITE;
+		int outlineoffset = 0;
+		bool filled = true, outline = false;
 		Rectangle() {
-			start = Vec2(0.f, 0.f);
-			end = Vec2(0.f, 0.f);
-			linethickness = 1.f;
-			color = COLOR_WHITE;
-			filled = false;
+		}
+		Rectangle(Vec2 topleft, Vec2 bottomright) : tl(topleft), br(bottomright), bl(tl.x, br.y), tr(bl.x, tl.y)
+		{
+		}
+		Type GetType() { return RECTANGLE; }
+		void SetColor(Color col) {
+			color = col;
+		}
+		void SetThickness(float thickness) {}
+		void SetFilled(bool filled) {}
+		bool Valid() {
+			return tl.distance(br) > 0;
+		}
+		void SetVisible(bool v) {
+			visible = v;
+		}
+		void Draw() {
+			if (!Valid()) { return; }
+			if (!Sudevice) { return; }
+
+			color.Clamp();
+
+			_VTX rect[] = {
+				{tl.x, tl.y, 0, 1.f, color.DirectX()},
+				{tr.x, tr.y, 0, 1.f, color.DirectX()},
+				{bl.x, bl.y, 0, 1.f, color.DirectX()},
+				{br.x, br.y, 0, 1.f, color.DirectX()},
+			};
+
+			Sudevice->SetFVF(D3DFVF_XYZRHW | D3DFVF_DIFFUSE);
+
+			Sudevice->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, rect, sizeof(_VTX));
 		}
 	};
 	struct Circle : public Shape {
@@ -274,7 +321,7 @@ namespace sudsy
 	class Tab;
 	class Panel;
 	class Window;
-	void Init(sudsy::Hook hk);
+	void Init();
 	void Render();
 	void Destroy();
 	inline bool Active = false;

@@ -4,11 +4,19 @@
 
 void MainThread() {
 
-	Shapes::Line line(Vec2(100,100),Vec2(1200,1200),50.f,Color(255,0,0,255));
+	Color red(255, 0, 0, 255);
 
-	sudsy::Hook hk;
-	sudsy::Init(hk);
-	while (true) {	Sleep(50);	}
+	Shapes::Rectangle rect(Vec2(95, 295), Vec2(505, 305));
+	rect.SetColor(red);
+	Shapes::Line line(Vec2(95, 300), Vec2(505, 300), 25.f, COLOR_WHITE);
+	rect.AddChild(line);
+	Shapes::Line child(Vec2(100, 300), Vec2(500, 300), 20.f, COLOR_BLACK);
+	line.AddChild(child);
+
+	sudsy::Init();
+	while (true) {
+		Sleep(50);	
+	}
 
 }
 

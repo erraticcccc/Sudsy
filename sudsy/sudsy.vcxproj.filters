@@ -22,6 +22,12 @@
     <Filter Include="Classes\Window">
       <UniqueIdentifier>{b83727e6-5e95-450b-9cda-a0dba617278b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Classes\Checkbox">
+      <UniqueIdentifier>{f715dea5-737b-470e-97f1-619d33c3fe1f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Classes\Image">
+      <UniqueIdentifier>{7f008d84-6b1f-44cc-b922-bb71851f649e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Sudsy\Sudsy.cpp">
@@ -38,6 +44,12 @@
     </ClCompile>
     <ClCompile Include="Sudsy\Window\window.cpp">
       <Filter>Classes\Window</Filter>
+    </ClCompile>
+    <ClCompile Include="Sudsy\Checkbox\checkbox.cpp">
+      <Filter>Classes\Checkbox</Filter>
+    </ClCompile>
+    <ClCompile Include="Sudsy\Image\Image.cpp">
+      <Filter>Classes\Image</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -62,5 +74,14 @@
     <ClInclude Include="Sudsy\Window\window.h">
       <Filter>Classes\Window</Filter>
     </ClInclude>
+    <ClInclude Include="Sudsy\Checkbox\checkbox.h">
+      <Filter>Classes\Checkbox</Filter>
+    </ClInclude>
+    <ClInclude Include="Sudsy\Image\Image.h">
+      <Filter>Classes\Image</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\README.md" />
   </ItemGroup>
 </Project>

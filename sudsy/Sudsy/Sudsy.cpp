@@ -5,7 +5,9 @@ EndScene oEndScene;
 
 HRESULT __stdcall RenderScene(IDirect3DDevice9* pDevice);
 
-void sudsy::Init(sudsy::Hook hk) {
+
+
+void sudsy::Init() {
 	IDirect3D9* pD3D = Direct3DCreate9(D3D_SDK_VERSION);
 
 	if (!pD3D) { return; }
@@ -29,7 +31,17 @@ void sudsy::Init(sudsy::Hook hk) {
 
 	auto pVTable = *reinterpret_cast<void***>(Sudevice);
 
-	oEndScene = (EndScene)hk.THook((BYTE*)pVTable[42], (BYTE*)&RenderScene, 7);
+	oEndScene = (EndScene)sudsy::hook.THook((BYTE*)pVTable[42], (BYTE*)&RenderScene, 7);
+}
+
+void DrawChildren(const std::vector<Sudject*>& childvec) {
+	for (auto& children : childvec) {
+		if (!children->Valid()) { continue; }
+		children->Draw();
+		if (!children->GetChildren().empty()) {
+			DrawChildren(children->GetChildren());
+		}
+	}
 }
 
 void sudsy::Render() {
@@ -43,7 +55,12 @@ void sudsy::Render() {
 
 	for (auto& suds : sudjects) {
 		if (!suds->IsVisible()) { continue; }
+		if (!suds->Valid()) { continue; }
+		if (suds->GetParent()) { continue; }
 		suds->Draw();
+		if (!suds->GetChildren().empty()) {
+			DrawChildren(suds->GetChildren());
+		}
 	}
 }
 

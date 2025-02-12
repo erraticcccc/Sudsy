@@ -1,7 +1,7 @@
 #pragma once
 #include "main.h"
 
-typedef unsigned char byte;
+typedef BYTE byte;
 
 namespace sudsy {
 	class Hook {
