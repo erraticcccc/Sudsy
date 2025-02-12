@@ -247,5 +247,5 @@ namespace sudsy
 	void Init();
 	void Render();
 	void Destroy();
-	bool Active = false;
+	inline bool Active = false;
 }

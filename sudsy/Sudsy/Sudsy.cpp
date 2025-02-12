@@ -32,11 +32,11 @@ void sudsy::Init() {
 		return;
 	}
 
-	auto pEndScene = *reinterpret_cast<void***>(pDevice)[42];
+	auto pVTable = *reinterpret_cast<void***>(pDevice);
 
 	// 3 fucking EndScenes: pEndScene (function location based off of vTable), oEndScene (original function), and HkEndScene (hook object)
 
-	sudsy::Hook HkEndScene(pEndScene, &RenderScene);
+	sudsy::Hook HkEndScene(pVTable[42], &RenderScene);
 
 	HkEndScene.Init();
 

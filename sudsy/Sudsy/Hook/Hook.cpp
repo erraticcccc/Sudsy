@@ -50,12 +50,12 @@ namespace sudsy
 
 	void Hook::Init()
 	{
-		stolenBytes.resize(5); // TBD, going to depend on size of first bytes within pEndScene
+		stolenBytes.resize(7); // TBD, going to depend on size of first bytes within pEndScene
 
-		memcpy(&stolenBytes[0], originalFunction, 5);
+		memcpy(&stolenBytes[0], originalFunction, 7);
 
 		DWORD oldProtect;
-		VirtualProtect(originalFunction, 5, PAGE_EXECUTE_READWRITE, &oldProtect);
+		VirtualProtect(originalFunction, 7, PAGE_EXECUTE_READWRITE, &oldProtect);
 
 		*(byte*)originalFunction = 0xE9;
 
@@ -63,7 +63,7 @@ namespace sudsy
 
 		*(uintptr_t*)((uintptr_t)originalFunction + 1) = relativeAddress;
 
-		VirtualProtect(originalFunction, 5, oldProtect, &oldProtect);
+		VirtualProtect(originalFunction, 7, oldProtect, &oldProtect);
 	}
 
 	void Hook::Undo()

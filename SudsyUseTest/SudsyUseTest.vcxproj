@@ -150,7 +150,7 @@
     <ClCompile Include="SudsyUseTest.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <Library Include="..\Debug\sudsy.lib" />
+    <Library Include="..\Win32\Debug\sudsy_x86.lib" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
