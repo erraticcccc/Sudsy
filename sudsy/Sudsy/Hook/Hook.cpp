@@ -3,110 +3,74 @@
 namespace sudsy
 {
 	// Two args: Target function, which will be replaced, and the replacement function, which will replace the target function
-	Hook::Hook(void* target, void* replacement)
-	{
-		SetTarget(target);
-		SetReplacement(replacement);
-		Init();
-	}
 
 	Hook::~Hook()
 	{
 	}
 
-#ifdef _WIN64
+#ifdef _WIN32
 
-	void Hook::Init()
-	{
-		stolenBytes.resize(14); // TBD, going to depend on size of first bytes within pEndScene
-
-		memcpy(&stolenBytes[0], originalFunction, 14);
-
-		DWORD oldProtect;
-		VirtualProtect(originalFunction, 14, PAGE_EXECUTE_READWRITE, &oldProtect);
-
-		*(byte*)originalFunction = 0x48;
-		*(byte*)((uintptr_t)originalFunction + 1) = 0xB8;
-		*(uintptr_t*)((uintptr_t)originalFunction + 2) = (uintptr_t)newFunction;
-		*(byte*)((uintptr_t)originalFunction + 10) = 0xFF;
-		*(byte*)((uintptr_t)originalFunction + 11) = 0xE0;
-
-		VirtualProtect(originalFunction, 14, oldProtect, &oldProtect);
-	}
-
-	void Hook::Undo()
-	{
-		DWORD oldProtect;
-		VirtualProtect(originalFunction, 14, PAGE_EXECUTE_READWRITE, &oldProtect);
-
-		memcpy(originalFunction, &stolenBytes[0], 14);
-
-		VirtualProtect(originalFunction, 14, oldProtect, &oldProtect);
-	}
-
-#elif _WIN32
-
-	void Hook::Init()
-	{
+	BYTE* Hook::THook(BYTE* toHook, BYTE* from, int amount) {
+		// to is the function you want to hook, from is the function
+		// that overrides "to".
+		if (amount < 5) return 0;
 		DWORD p;
-		VirtualProtect(originalFunction, 7, PAGE_EXECUTE_READWRITE, &p);
-		stolenBytes = (BYTE*)VirtualAlloc(0, 7 + 5, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
-		if (!stolenBytes) return;
-		memcpy(stolenBytes, originalFunction, 7);
-		uintptr_t relAddress = newFunction - originalFunction - 5;
-		uintptr_t jumpbackAddress = newFunction - stolenBytes - 5;
-		memset(originalFunction, 0x90, 7);
+		VirtualProtect(toHook, amount, PAGE_EXECUTE_READWRITE, &p);
+		stolenBytes = (BYTE*)VirtualAlloc(0, amount + 5, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
+		if (!stolenBytes) return 0;
+		memcpy(stolenBytes, toHook, amount);
+		uintptr_t relAddress = from - toHook - 5;
+		uintptr_t jumpbackAddress = toHook - stolenBytes - 5;
+		memset(toHook, 0x90, amount);
 
 		BYTE relJump[] = {
 			0xE9, 0x0, 0x0, 0x0, 0x0
 		};
 		memcpy(&relJump[1], &relAddress, 4);
-		memcpy(originalFunction, relJump, 5);
+		memcpy(toHook, relJump, 5);
 
 		memcpy(&relJump[1], &jumpbackAddress, 4);
-		memcpy(stolenBytes + 7, relJump, 5);
+		memcpy(stolenBytes + amount, relJump, 5);
 
-		VirtualProtect(originalFunction, 7, p, &p);
-	}
+		VirtualProtect(toHook, amount, p, &p);
 
-	byte* Hook::GetBytes() {
 		return stolenBytes;
 	}
 
-	void Hook::Undo()
-	{
-		DWORD oldProtect;
-		VirtualProtect(originalFunction, 7, PAGE_EXECUTE_READWRITE, &oldProtect);
+#elif _WIN64
 
-		memcpy(originalFunction, &stolenBytes[0], 7);
+	BYTE* Hook::THook64(BYTE* toHook, BYTE* from, int amount) {
+		// to is the function you want to hook, from is the function
+		// that overrides "to".
+		if (amount < 13) return 0;
+		DWORD p;
+		VirtualProtect(toHook, amount, PAGE_EXECUTE_READWRITE, &p);
+		stolenBytes = (BYTE*)VirtualAlloc(0, amount + 13, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
+		if (!stolenBytes) return 0; // virtualAlloc failed!
+		memcpy(stolenBytes, toHook, amount);
 
-		VirtualProtect(originalFunction, 7, oldProtect, &oldProtect);		
-	}
+		BYTE absJump64[] = {
+			0x49, 0xBA, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+			0x41, 0xFF, 0xE2
+		};
+		uint64_t testingVar = (uint64_t)from;
+		memcpy(&absJump64[2], &testingVar, 8);
+		memset(toHook, 0x90, amount);
+		memcpy(toHook, absJump64, sizeof(absJump64));
+
+		uint64_t jumpbackAddress = (uint64_t)(toHook + 13);
+		memcpy(&absJump64[2], &jumpbackAddress, 8);
+		memcpy((stolenBytes + amount), absJump64, 13);
+
+		VirtualProtect(toHook, amount, p, &p);
+
+		return stolenBytes;
+}
 
 #endif
 
 	void Hook::ToggleHook() 
 	{
-		if (Toggle)
-		{
-			Undo();
-			Toggle = false;
-		}
-		else
-		{
-			Init();
-			Toggle = true;
-		}
-	}
-
-	void Hook::SetTarget(void* func)
-	{
-		originalFunction = (byte*)func;
-	}
-
-	void Hook::Hook::SetReplacement(void* func)
-	{
-		newFunction = (byte*)func;
 	}
 
 }

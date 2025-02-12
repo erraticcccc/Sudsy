@@ -3,16 +3,10 @@
 #include "../sudsy/Sudsy/Sudsy.h"
 
 void MainThread() {
-	
-	Vec2 start(0, 0);
-	Vec2 end(100, 100);
-	auto line = Shapes::Line(start, end, 100, 100);
-	
-	sudsy::Init();
 
-	while (true) {
-		Sleep(10);
-	}
+	sudsy::Hook hk;
+	sudsy::Init(hk);
+	while (true) {	Sleep(50);	}
 
 }
 

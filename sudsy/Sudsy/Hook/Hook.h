@@ -5,18 +5,17 @@ typedef unsigned char byte;
 
 namespace sudsy {
 	class Hook {
-		byte* stolenBytes;
+		unsigned int Size = 0;
+		DWORD patternSize = 0;
+		HMODULE	mBase = 0;
 		bool Toggle;
-		byte* originalFunction;
-		byte* newFunction;
+		BYTE* stolenBytes;
 	public:
-		Hook(void* target, void* replacement);
 		~Hook();
-		void Init();
-		void Undo();
+		BYTE* THook(BYTE* to, BYTE* from, int amount);
+		// to is the function you want to hook, from is the function
+		// that overrides "to".
+		BYTE* THook64(BYTE* to, BYTE* from, int amount);
 		void ToggleHook();
-		void SetTarget(void* func);
-		void SetReplacement(void* func);
-		byte* GetBytes();
 	};
 }

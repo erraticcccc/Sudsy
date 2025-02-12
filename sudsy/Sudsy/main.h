@@ -163,7 +163,8 @@ namespace Shapes {
 		}
 		Type GetType() { return LINE; }
 		void Draw() {
-			if (!line || line == nullptr) return;
+			if (!Sudevice) { return; }
+			if (!line || line == nullptr) { return; }
 			line->SetWidth(thickness);
 			D3DXVECTOR2 b[] = { D3DXVECTOR2(this->start.x, this->start.y), D3DXVECTOR2(this->end.x, this->end.y) };
 			line->Begin();
@@ -246,7 +247,7 @@ namespace sudsy
 	class Tab;
 	class Panel;
 	class Window;
-	void Init();
+	void Init(Hook);
 	void Render();
 	void Destroy();
 	inline bool Active = false;
