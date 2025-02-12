@@ -2,44 +2,47 @@
 #include "common.h"
 
 struct Color {
-	float r, g, b, a;
-	Color() {
-		r = g = b = a = 255.f;
+	int r, g, b, a;
+
+	Color() : r(255), g(255), b(255), a(255) {}
+
+	Color(int _r, int _g, int _b, int _a = 255) {
+		Set(_r, _g, _b, _a);
 	}
-	Color(float _r, float _g, float _b, float _a = 255.f) {
+
+	Color(int z) {
+		Set(z, z, z, z);
+	}
+
+	void Set(int _r, int _g, int _b, int _a = 255) {
 		r = _r; g = _g; b = _b; a = _a;
+		Clamp();
 	}
-	Color(float z) {
-		r = g = b = a = z;
+
+	void Set(const Color& color) {
+		r = color.r;
+		g = color.g;
+		b = color.b;
+		a = color.a;
+		Clamp();
 	}
-	void Set(float _r, float _g, float _b, float _a = 255.f) { r = _r; g = _g; b = _b; a = _a; }
-	void Set(Color color) { r = color.r; g = color.g; b = color.b; a = color.a; }
- 
-	bool Valid() {
-		return (r >= 0.0f && r <= 255.0f) &&
-			(g >= 0.0f && g <= 255.0f) &&
-			(b >= 0.0f && b <= 255.0f) &&
-			(a >= 0.0f && a <= 255.0f);
+
+	bool Valid() const {
+		return (r >= 0 && r <= 255) &&
+			(g >= 0 && g <= 255) &&
+			(b >= 0 && b <= 255) &&
+			(a >= 0 && a <= 255);
 	}
-	
-	bool Valid(float z) {
-		return (z < 255.f) && (z > 0.f);
+
+	bool Valid(int z) const {
+		return (z >= 0 && z <= 255);
 	}
-	
+
 	void Clamp() {
-		if (Valid()) { return; }
-		if (!Valid(r)) {
-			r > 255 ? r -= 255 : r = 255 - r;
-		}
-		if (!Valid(g)) {
-			g > 255 ? g -= 255 : g = 255 - g;
-		}
-		if (!Valid(b)) {
-			b > 255 ? b -= 255 : b = 255 - b;
-		}
-		if (!Valid(a)) {
-			a > 255 ? a -= 255 : a = 255 - a;
-		}
+		r = std::clamp(r,0, 255);
+		g = std::clamp(g,0, 255);
+		b = std::clamp(b,0, 255);
+		a = std::clamp(a,0, 255);
 	}
 
 	void operator=(Color other) {
@@ -84,9 +87,11 @@ struct Vec2 {
 class Sudject;
 
 inline std::vector <Sudject*> sudjects;
+inline LPDIRECT3DDEVICE9 Sudevice;
 
 // Used as a base class for all objects, will be used for parent/child relationships
 class Sudject {
+protected:
 	bool visible;
 	Sudject* parent;
 	std::vector <Sudject*> children;
@@ -119,31 +124,93 @@ public:
 	virtual void Draw() = 0;
 };
 
+inline Color COLOR_WHITE = Color(255, 255, 255, 255);
+inline Color COLOR_BLACK = Color(0, 0, 0, 255);
 
-inline Color COLOR_WHITE = Color(255.f, 255.f, 255.f, 255.f);
-inline Color COLOR_BLACK = Color(0.f, 0.f, 0.f, 255.f);
-
+struct Shape {
+	enum Type {
+		LINE,
+		RECTANGLE,
+		CIRCLE,
+		TRIANGLE
+	};
+	virtual Type GetType() = 0;
+	virtual void Draw() = 0;
+	virtual void SetColor(Color color) = 0;
+	virtual void SetThickness(float thickness) = 0;
+	virtual void SetFilled(bool filled) = 0;
+};
 
 namespace Shapes {
-	struct Line {
+	struct Line : public Shape {
 		Vec2 start, end;
 		float thickness;
 		Color color;
+		ID3DXLine* line = nullptr;
+		Line() {
+			start = Vec2(0.f, 0.f);
+			end = Vec2(0.f, 0.f);
+			thickness = 1.f;
+			color = COLOR_WHITE;
+			D3DXCreateLine(Sudevice, &line);
+		}
+		Line(Vec2 s, Vec2 e, float t, Color c) {
+			start = s;
+			end = e;
+			thickness = t;
+			color = c;
+			D3DXCreateLine(Sudevice, &line);
+		}
+		Type GetType() { return LINE; }
+		void Draw() {
+			if (!line || line == nullptr) return;
+			line->SetWidth(thickness);
+			D3DXVECTOR2 b[] = { D3DXVECTOR2(this->start.x, this->start.y), D3DXVECTOR2(this->end.x, this->end.y) };
+			line->Draw(b, 2, D3DCOLOR_ARGB(color.a, color.r, color.g, color.b));
+		}
+		void SetColor(Color color) {
+			this->color = color;
+		}
+		void SetThickness(float thickness) {
+			this->thickness = thickness;
+		}
+		void SetFilled(bool filled) {
+			// Not used
+		}
+		~Line() {
+			line->Release();
+			line = nullptr;
+		}
 	};
-	struct Rectangle {
+	struct Rectangle : public Shape {
 		Vec2 start, end;
 		float linethickness;
 		Color color;
 		bool filled;
+		
+		Rectangle() {
+			start = Vec2(0.f, 0.f);
+			end = Vec2(0.f, 0.f);
+			linethickness = 1.f;
+			color = COLOR_WHITE;
+			filled = false;
+		}
 	};
-	struct Circle {
+	struct Circle : public Shape {
 		Vec2 center;
 		float linethickness;
 		float radius;
 		Color color;
 		bool filled;
+		Circle() {
+			center = Vec2(0.f, 0.f);
+			linethickness = 1.f;
+			radius = 0.f;
+			color = COLOR_WHITE;
+			filled = false;
+		}
 	};
-	struct Triangle {
+	struct Triangle : public Shape {
 		Vec2 a, b, c;
 		float linethickness;
 		Color color;
@@ -177,8 +244,8 @@ namespace sudsy
 	class Tab;
 	class Panel;
 	class Window;
-	inline void Init(DX dxversion);
-	inline void Render();
-	inline void Destroy();
-	inline bool Active = false;
+	void Init();
+	void Render();
+	void Destroy();
+	bool Active = false;
 }

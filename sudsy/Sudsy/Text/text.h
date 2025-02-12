@@ -3,7 +3,7 @@
 
 namespace sudsy
 {
-	class Text
+	class Text : public Sudject
 	{
 		std::string content;
 		std::string font;
@@ -35,6 +35,11 @@ namespace sudsy
 		void SetFontOutlineColor(Color color);
 		void SetFontShadowColor(Color color);
 		~Text();
+		void Draw();
+		bool Valid();
+		void SetVisible(bool v) {
+			visible = v;
+		}
 	public:
 		Text& operator=(std::string content);
 		Text& operator=(int itostr); // converts integerts to strings

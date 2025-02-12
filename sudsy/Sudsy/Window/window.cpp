@@ -2,6 +2,9 @@
 
 namespace sudsy
 {
+	void Window::Draw() {
+
+	}
 	Window::Window()
 	{
 		Window::Create();
@@ -13,20 +16,20 @@ namespace sudsy
 		title = t;
 	}
 
-	Window::Window(std::string t, int w, int h)
+	Window::Window(std::string t, int width, int height)
 	{
 		Window::Create();
 		title = t;
-		width = w;
-		height = h;
+		this->w = w;
+		this->h = h;
 	}
 
-	Window::Window(std::string t, int w, int h, int posx, int posy)
+	Window::Window(std::string t, int width, int height, int posx, int posy)
 	{
 		Window::Create();
 		title = t;
-		width = w;
-		height = h;
+		this->w = width;
+		this->h = height;
 		x = posx;
 		y = posy;
 	}
@@ -45,11 +48,6 @@ namespace sudsy
 	void Window::Destroy()
 	{
 		// Destroy window
-	}
-
-	void Window::Render()
-	{
-		// Render window
 	}
 
 	void Window::SetTitle(sudsy::Text title)
@@ -71,7 +69,7 @@ namespace sudsy
 	void Window::SetVisible(bool visible)
 	{
 		// Set window visibility
-		Window::SetAlpha(visible ? 255.f : 0.f);
+		Window::SetAlpha(visible ? 255 : 0);
 	}
 
 	void Window::SetMinimized(bool minimized)
@@ -105,14 +103,14 @@ namespace sudsy
 	{
 	}
 
-	void Window::SetAlpha(float alpha)
+	void Window::SetAlpha(int alpha)
 	{
 		color.a = alpha;
 	}
 
-	void Window::SetColor(float r, float g, float b)
+	void Window::SetColor(int x, int y, int z)
 	{
-		color = Color(color.r, color.g, color.b);
+		color = Color(x,y,z);
 	}
 
 	void Window::SetColor(Color col)

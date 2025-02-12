@@ -2,6 +2,12 @@
 
 namespace sudsy 
 {
+	void Text::Draw() {
+
+	}
+	bool Text::Valid() {
+		return this->content.length() > 0;
+	}
 	Text::Text()
 	{
 		this->content = "";

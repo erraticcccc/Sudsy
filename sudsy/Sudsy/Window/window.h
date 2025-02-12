@@ -14,7 +14,6 @@ namespace sudsy
 	public:
 		void Create();
 		void Destroy();
-		void Render();
 		void SetTitle(sudsy::Text title);
 		void SetSize(int width, int height);
 		void SetPosition(int x, int y);
@@ -26,17 +25,15 @@ namespace sudsy
 		void SetSizable(bool sizable);
 		void SetMinSize(int width, int height);
 		void SetMaxSize(int width, int height);
-		void SetAlpha(float alpha);
-		void SetColor(float r, float g, float b);
+		void SetAlpha(int alpha);
+		void SetColor(int x, int y, int z);
 		void SetColor(Color col);
 		void SetText(Text txt);
 		bool IsMouseInWindow();
+		void Draw();
 	private:
 		sudsy::Text title;
-		int width;
-		int height;
-		int x;
-		int y;
+		int w, h, x, y;
 		bool visible;
 		bool minimized;
 		bool maximized;

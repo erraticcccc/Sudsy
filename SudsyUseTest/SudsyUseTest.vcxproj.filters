@@ -20,7 +20,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Library Include="..\Win32\Debug\sudsy.lib">
+    <Library Include="..\Debug\sudsy.lib">
       <Filter>Source Files</Filter>
     </Library>
   </ItemGroup>
