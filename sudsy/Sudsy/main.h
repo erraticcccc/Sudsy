@@ -115,7 +115,7 @@ struct Vec2
 
 struct _VTX {
 	float x, y, z, rwh;
-	DWORD col;
+	D3DCOLOR col;
 };
 
 class Sudject;
@@ -240,7 +240,7 @@ namespace Shapes {
 		bool filled = true, outline = false;
 		Rectangle() {
 		}
-		Rectangle(Vec2 topleft, Vec2 bottomright) : tl(topleft), br(bottomright), bl(tl.x, br.y), tr(bl.x, tl.y)
+		Rectangle(Vec2 topleft, Vec2 bottomright) : tl(topleft), br(bottomright), bl(tl.x, br.y), tr(br.x, tl.y)
 		{
 		}
 		Type GetType() { return RECTANGLE; }
@@ -259,18 +259,26 @@ namespace Shapes {
 			if (!Valid()) { return; }
 			if (!Sudevice) { return; }
 
-			color.Clamp();
+			static ID3DXLine* pLine = nullptr;
 
-			_VTX rect[] = {
-				{tl.x, tl.y, 0, 1.f, color.DirectX()},
-				{tr.x, tr.y, 0, 1.f, color.DirectX()},
-				{bl.x, bl.y, 0, 1.f, color.DirectX()},
-				{br.x, br.y, 0, 1.f, color.DirectX()},
-			};
+			if (!pLine)
+				D3DXCreateLine(Sudevice, &pLine);
 
-			Sudevice->SetFVF(D3DFVF_XYZRHW | D3DFVF_DIFFUSE);
+			if (pLine)
+			{
+				float Thickness = br.y - tl.y;
+				float Y = tl.y + (Thickness / 2.f);
 
-			Sudevice->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, rect, sizeof(_VTX));
+				D3DXVECTOR2 left(tl.x, Y);
+				D3DXVECTOR2 right(tl.x + br.x, Y);
+
+				pLine->SetWidth(Thickness);
+
+				D3DXVECTOR2 points[2] = { left, right };
+
+				this->color.Clamp();
+				pLine->Draw(points, 2, this->color.DirectX());
+			}
 		}
 	};
 	struct Circle : public Shape {

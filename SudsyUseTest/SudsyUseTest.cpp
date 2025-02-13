@@ -6,7 +6,7 @@ void MainThread() {
 
 	Color red(255, 0, 0, 255);
 
-	Shapes::Rectangle rect(Vec2(95, 295), Vec2(505, 305));
+	Shapes::Rectangle rect(Vec2(50, 50), Vec2(100, 100));
 	rect.SetColor(red);
 	Shapes::Line line(Vec2(95, 300), Vec2(505, 300), 25.f, COLOR_WHITE);
 	rect.AddChild(line);
