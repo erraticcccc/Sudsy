@@ -46,6 +46,9 @@ namespace sudsy
 		}
 	void Text::SetFontShadowColor(Color color){
 		}
+	ScreenPos Text::GetPos() {
+		return ScreenPos(pos,pos);
+	}
 	Text::~Text() {
 	}
 }

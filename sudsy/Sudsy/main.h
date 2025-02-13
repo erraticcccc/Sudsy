@@ -103,6 +103,13 @@ struct Vec2
 		x = _x; y = _y;
 	}
 
+	Vec2 operator+ (Vec2 other) {
+		return Vec2(x + other.x, y + other.y);
+	}
+	Vec2 operator- (Vec2 other) {
+		return Vec2(x - other.x, y - other.y);
+	}
+
 	float distance(Vec2 other) {
 		return HYPOTENUSE(fabs(other.x - this->x), fabs(other.y - this->y));
 	}
@@ -111,6 +118,13 @@ struct Vec2
 	{
 		return D3DXVECTOR2(x, y);
 	}
+};
+
+struct ScreenPos {
+	ScreenPos(Vec2 s, Vec2 e) {
+		start = s, end = e;
+	}
+	Vec2 start, end;
 };
 
 struct _VTX {
@@ -151,11 +165,13 @@ public:
 	}
 	void AddChild(Sudject& child) {
 		children.push_back(&child);
+		child.parent = this;
 	}
 	bool IsVisible() { return visible; }
-	virtual bool Valid() = 0;
-	virtual void SetVisible(bool vis) = 0;
 	virtual void Draw() = 0;
+	virtual bool Valid() = 0;
+	virtual ScreenPos GetPos() = 0;
+	virtual void SetVisible(bool vis) = 0;
 };
 
 inline Color COLOR_WHITE = Color(255, 255, 255, 255);
@@ -193,6 +209,9 @@ namespace Shapes {
 			color = c;
 		}
 		Type GetType() { return LINE; }
+		ScreenPos GetPos() {
+			return ScreenPos(start, end);
+		}
 		void Draw() {
 			if (!Valid()) { return; }
 			if (!Sudevice) { return; }
@@ -206,7 +225,14 @@ namespace Shapes {
 			{
 				pLine->SetWidth(this->thickness);
 
-				D3DXVECTOR2 points[2] = { this->start.ToDirectX(), this->end.ToDirectX() };
+				D3DXVECTOR2 points[2];
+
+				if (!parent) {
+					points[0] = start.ToDirectX(), points[1] = end.ToDirectX();
+				}
+				else {
+					points[0] = (parent->GetPos().start + start).ToDirectX(), points[1] = (parent->GetPos().end - end).ToDirectX();
+				}
 
 				this->color.Clamp();
 
@@ -226,7 +252,12 @@ namespace Shapes {
 			// Not used
 		}
 		bool Valid() {
-			return start.distance(end) > 0;
+			if (!parent) {
+				return start.distance(end) > 0;
+			}
+			else {
+				return (parent->GetPos().start + start).distance(parent->GetPos().end - end) > 0;
+			}
 		}
 		void SetVisible(bool vis) {
 			visible = vis;

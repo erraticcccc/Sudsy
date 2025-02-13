@@ -7,6 +7,7 @@ namespace sudsy
 	{
 		std::string content;
 		std::string font;
+		Vec2 pos;
 		Sudject* parent;
 		int fontSize;
 		Color fontcolor; // not even sure if this is going to be possible
@@ -35,6 +36,7 @@ namespace sudsy
 		void SetFontOutlineColor(Color color);
 		void SetFontShadowColor(Color color);
 		~Text();
+		ScreenPos GetPos();
 		void Draw();
 		bool Valid();
 		void SetVisible(bool v) {

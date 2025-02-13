@@ -6,11 +6,8 @@ void MainThread() {
 
 	Color red(255, 0, 0, 255);
 
-	Shapes::Rectangle rect(Vec2(50, 50), Vec2(100, 100));
-	rect.SetColor(red);
 	Shapes::Line line(Vec2(95, 300), Vec2(505, 300), 25.f, COLOR_WHITE);
-	rect.AddChild(line);
-	Shapes::Line child(Vec2(100, 300), Vec2(500, 300), 20.f, COLOR_BLACK);
+	Shapes::Line child(Vec2(5, 0), Vec2(5, 0), 20.f, COLOR_BLACK);
 	line.AddChild(child);
 
 	sudsy::Init();
