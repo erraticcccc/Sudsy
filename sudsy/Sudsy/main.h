@@ -14,6 +14,16 @@ static int _clmp(int to, int max, int min) {
 	return to;
 }
 
+static float _fclmp(float to, float max, float min) {
+	if (to > max) {
+		to -= max;
+	}
+	if (to < min) {
+		to = max - to;
+	}
+	return to;
+}
+
 struct Color {
 	int r, g, b, a;
 
@@ -103,6 +113,10 @@ struct Vec2
 		x = _x; y = _y;
 	}
 
+	void Set(float _x, float _y) {
+		x = _x, y = _y;
+	}
+
 	Vec2 operator+ (Vec2 other) {
 		return Vec2(x + other.x, y + other.y);
 	}
@@ -112,6 +126,20 @@ struct Vec2
 
 	float distance(Vec2 other) {
 		return HYPOTENUSE(fabs(other.x - this->x), fabs(other.y - this->y));
+	}
+
+	void clamp(float maxx, float minx, float maxy, float miny) {
+		x = _fclmp(x, maxx, minx);
+		y = _fclmp(y, maxy, miny);
+	}
+
+	void bounds(float boundsmin, float boundsmax, float pos, bool& b) {
+		if (boundsmax < pos) {
+			b = false;
+		}
+		else if (boundsmin > pos) {
+			b = true;
+		}
 	}
 
 	D3DXVECTOR2 ToDirectX()

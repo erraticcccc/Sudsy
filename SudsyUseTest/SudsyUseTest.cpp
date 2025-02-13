@@ -6,13 +6,21 @@ void MainThread() {
 
 	Color red(255, 0, 0, 255);
 
-	Shapes::Line line(Vec2(95, 300), Vec2(505, 300), 25.f, COLOR_WHITE);
-	Shapes::Line child(Vec2(5, 0), Vec2(5, 0), 20.f, COLOR_BLACK);
-	line.AddChild(child);
+	Shapes::Line ball(Vec2(95, 300), Vec2(505, 300), 15.f, red);
 
 	sudsy::Init();
+	
+	bool xdir = false, ydir = false;
+	int ballx = 0, bally = 0;
+
 	while (true) {
-		Sleep(50);	
+		ball.start.bounds(1, 1919, ball.start.x, xdir);
+		ball.start.bounds(1, 1080, ball.start.y, ydir);
+		xdir ? ballx++ : ballx--;
+		ydir ? bally++ : bally--;
+		ball.start.Set(ballx * 9.f, bally * 8.f);
+		ball.end.Set(ball.start.x + 20, ball.start.y);
+		Sleep(15);
 	}
 
 }
