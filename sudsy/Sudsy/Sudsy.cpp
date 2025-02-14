@@ -32,6 +32,9 @@ void sudsy::Init() {
 	auto pVTable = *reinterpret_cast<void***>(Sudevice);
 
 	oEndScene = (EndScene)sudsy::hook.THook((BYTE*)pVTable[42], (BYTE*)&RenderScene, 7);
+
+	Sudevice->Release();
+	pD3D->Release();
 }
 
 void DrawChildren(const std::vector<Sudject*>& childvec) {
@@ -70,6 +73,7 @@ void sudsy::Destroy() {
 
 HRESULT __stdcall RenderScene(IDirect3DDevice9* pDevice) {
 	Sudevice = pDevice;
+	
 	sudsy::Render();
 
 	return oEndScene(pDevice);

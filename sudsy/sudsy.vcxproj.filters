@@ -28,6 +28,15 @@
     <Filter Include="Classes\Image">
       <UniqueIdentifier>{7f008d84-6b1f-44cc-b922-bb71851f649e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Classes\Shape">
+      <UniqueIdentifier>{a45fd61e-0b95-4022-91d3-e3e7ee565745}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Classes\Base Class">
+      <UniqueIdentifier>{56360af3-7cd8-41cb-a258-aab888a29785}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Classes\Storage Classes">
+      <UniqueIdentifier>{de9c7560-7b1a-42ca-a585-63b06c838baa}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Sudsy\Sudsy.cpp">
@@ -79,6 +88,15 @@
     </ClInclude>
     <ClInclude Include="Sudsy\Image\Image.h">
       <Filter>Classes\Image</Filter>
+    </ClInclude>
+    <ClInclude Include="Sudsy\Misc\Sudject.h">
+      <Filter>Classes\Base Class</Filter>
+    </ClInclude>
+    <ClInclude Include="Sudsy\Misc\Storage.h">
+      <Filter>Classes\Storage Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="Sudsy\Misc\Shape.h">
+      <Filter>Classes\Shape</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

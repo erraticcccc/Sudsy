@@ -34,6 +34,9 @@
     <ClInclude Include="Sudsy\Hook\Hook.h" />
     <ClInclude Include="Sudsy\Image\Image.h" />
     <ClInclude Include="Sudsy\main.h" />
+    <ClInclude Include="Sudsy\Misc\Shape.h" />
+    <ClInclude Include="Sudsy\Misc\Storage.h" />
+    <ClInclude Include="Sudsy\Misc\Sudject.h" />
     <ClInclude Include="Sudsy\Sudsy.h" />
     <ClInclude Include="Sudsy\Text\text.h" />
     <ClInclude Include="Sudsy\Window\window.h" />
