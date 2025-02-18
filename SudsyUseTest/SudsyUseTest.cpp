@@ -2,24 +2,32 @@
 
 #if defined(_WIN32) && !defined(_WIN64)
 
-#pragma comment(lib,"Win32/Debug/sudsy_x86.lib")
+#pragma comment(lib,"sudsy_x86.lib")
 
 #elif defined(_WIN64)
 
-#pragma comment(lib,"x64/Debug/sudsy_x64.lib")
+#pragma comment(lib,"sudsy_x64.lib")
 
 #endif
 
 void MainThread() {
 
 	Color red(255, 0, 0, 255);
-	Vec2  pos(30, 30);
-	Vec2  pos2(450, 300);
-	Vec2  offset(10, 0);
+	Color blue(0, 0, 255, 255);
+	Color rainbow(255, 255, 255, 255);
+	Vec2  pos(300, 300);
+	
+	Shapes::Circle circle(pos,150,red);
+	Shapes::Circle circle2(pos,148,blue);
+	Shapes::Circle circle3(pos,100,rainbow);
 
 	sudsy::Init();
 
+	float g = 0;
 	while (true) {
+		g++;
+		rainbow.HSLToColor(g, 1, 0.4);
+		circle3.SetColor(rainbow);
 		Sleep(10);
 	}
 

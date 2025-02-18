@@ -104,12 +104,13 @@ namespace Shapes {
 		int outlineoffset = 0;
 		bool filled = true, outline = false;
 		_VTX vtc[4];
+		D3DXVECTOR2 vtx[5];
 		Rectangle() {
 		}
-		Rectangle(Vec2 topleft, Vec2 bottomright) : tl(topleft), br(bottomright), bl(tl.x, br.y), tr(br.x, tl.y)
+		Rectangle(Vec2 topleft, Vec2 bottomright) : tl(topleft), br(bottomright), bl(topleft.x, bottomright.y), tr(bottomright.x, topleft.y)
 		{
 		}
-		Rectangle(Vec2 topleft, Vec2 bottomright, Color col) : color(col), tl(topleft), br(bottomright), bl(tl.x, br.y), tr(br.x, tl.y)
+		Rectangle(Vec2 topleft, Vec2 bottomright, Color col) : color(col), tl(topleft), br(bottomright), bl(topleft.x, bottomright.y), tr(bottomright.x, topleft.y)
 		{
 		}
 		Type GetType() { return S_SHAPE; }
@@ -120,7 +121,7 @@ namespace Shapes {
 			return ScreenPos(tl, br);
 		}
 		float Area() {
-			return 0.f;
+			return ((tr.x - tl.x) * (bl.y - tl.y));
 		}
 		void SetThickness(float thickness) {}
 		void SetFilled(bool filled) {}
@@ -133,21 +134,45 @@ namespace Shapes {
 		void Draw() {
 			if (!Valid()) { return; }
 			if (!Sudevice) { return; }
+			
+			static ID3DXLine* pLine = nullptr;
 
-			vtc[0] = { 0, 0, 0, 1.0f, color.DirectX()};
-			vtc[1] = { 500, 0, 0, 1.0f, color.DirectX() };
-			vtc[2] = { 0, 300, 0, 1.0f, color.DirectX() };
-			vtc[3] = { 500, 300, 0, 1.0f, color.DirectX() };
+			if (!pLine)
+				D3DXCreateLine(Sudevice, &pLine);
 
-			Sudevice->SetFVF(CUSTOMFVF);
-			Sudevice->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, vtc, sizeof(_VTX));
+			if (parent) {
+				ScreenPos pp = parent->GetPos();
+				for (float i = tl.y + pp.start.y; i < pp.end.y - br.y; ++i) {
+					D3DXVECTOR2 line[] = {
+						D3DXVECTOR2(tl.x + pp.start.x, i),
+						D3DXVECTOR2(pp.end.x - tr.x, i)
+					};
+					pLine->Draw(line, 2, color.DirectX());
+				}
+			}
+			else {
+				for (float i = tr.y; i < br.y; ++i) {
+					D3DXVECTOR2 line[] = {
+						D3DXVECTOR2(tl.x, i),
+						D3DXVECTOR2(tr.x, i)
+					};
+					pLine->Draw(line, 2, color.DirectX());
+				}
+			}
+			//vtc[0] = { 0, 0, 0, 1.0f, color.DirectX()};
+			//vtc[1] = { 500, 0, 0, 1.0f, color.DirectX() };
+			//vtc[2] = { 0, 300, 0, 1.0f, color.DirectX() };
+			//vtc[3] = { 500, 300, 0, 1.0f, color.DirectX() };
+
+			//Sudevice->SetFVF(CUSTOMFVF);
+			//Sudevice->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, vtc, sizeof(_VTX));
 		}
 	};
 	struct Circle : public Shape {
 		Vec2 center = pd::VEC2ZERO;
 		float linethickness = 1.f;
 		float radius = 0.f;
-		Color color = pd::COLOR_WHITE;
+		Color color;
 		bool filled = true;
 		Circle() {}
 		Circle(Vec2& c, float r, Color& col) : center(c), radius(r), color(col) {}
@@ -159,15 +184,31 @@ namespace Shapes {
 			if (!Valid()) { return; }
 			if (!Sudevice) { return; }
 
-			_VTX line[] = {
-				{ 100.0f, 100.0f, 0.0f, 1.0f, D3DCOLOR_XRGB(255, 0, 0) },
-				{ 200.0f, 200.0f, 0.0f, 1.0f, D3DCOLOR_XRGB(255, 0, 0) }
-			};
+			const int numSegments = 36;
+			_VTX vertices[numSegments + 2];
+
+			vertices[0].x = center.x;
+			vertices[0].y = center.y;
+			vertices[0].z = 0.0f;
+			vertices[0].rhw = 1.0f;
+			vertices[0].color = color.DirectX();
+
+			for (int i = 1; i <= numSegments + 1; ++i)
+			{
+				float theta = (2 * D3DX_PI * (i - 1)) / numSegments;
+				vertices[i].x = center.x + radius * cosf(theta);
+				vertices[i].y = center.y - radius * sinf(theta);
+				vertices[i].z = 0.0f;
+				vertices[i].rhw = 1.0f;
+				vertices[i].color = color.DirectX();
+			}
 
 			Sudevice->SetFVF(D3DFVF_CUSTOMVERTEX);
-			HRESULT hr = Sudevice->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 1, line, sizeof(_VTX));
 
-			std::cout << hr;
+			Sudevice->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, numSegments, vertices, sizeof(_VTX));
+		}
+		float Area() {
+			return ::sqrtf(D3DX_PI * (radius * radius));
 		}
 		ScreenPos GetPos() {
 			return ScreenPos(center, center);
@@ -175,7 +216,7 @@ namespace Shapes {
 		void SetVisible(bool vis) {
 			visible = vis;
 		}
-		void SetColor(Color col) { color = col; }
+		void SetColor(const Color &col) { color = col; }
 		void SetThickness(float thickness) { linethickness = thickness; }
 		void SetFilled(bool filled) { this->filled = filled; }
 

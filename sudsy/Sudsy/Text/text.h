@@ -47,8 +47,9 @@ namespace sudsy
 		Text();
 		Text(std::string content);
 		Text(std::string content, Vec2 pos);
+		Text(std::string content, Vec2 pos, Color col);
 		Text(std::string content, int size);
-		Text(std::string content, int size, Color color);
+		Text(std::string content, int size, Color col);
 		void SetFont(std::string font);
 		void SetFontSize(int size);
 		void SetFontColor(Color color);

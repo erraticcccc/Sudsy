@@ -161,6 +161,9 @@ struct Vec2
 	Vec2 operator- (Vec2 other) {
 		return Vec2(x - other.x, y - other.y);
 	}
+	void operator+=(Vec2 other) {
+		this->Set(other.x + this->x, other.y + this->y);
+	}
 
 	float distance(Vec2 other) {
 		return HYPOTENUSE(fabs(other.x - this->x), fabs(other.y - this->y));

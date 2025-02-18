@@ -29,6 +29,11 @@ namespace sudsy
 		this->content = content;
 		pos = w;
 	}
+	Text::Text(std::string con, Vec2 p, Color col) {
+		content = con;
+		pos = p;
+		fontcolor = col;
+	}
 	Text::Text(std::string content, int size)
 	{
 		this->content = content;

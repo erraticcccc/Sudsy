@@ -90,14 +90,8 @@ void sudsy::Render() {
 }
 
 void sudsy::Destroy() {
-
+	sudsy::hook.ToggleHook();
 }
-
-struct CUSTOMVERTEX
-{
-	FLOAT x, y, z, rhw; // The transformed position for the vertex
-	DWORD color;        // The vertex color
-};
 
 HRESULT __stdcall RenderScene(IDirect3DDevice9* pDevice) {
 	Sudevice = pDevice;
