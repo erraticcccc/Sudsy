@@ -6,6 +6,13 @@ class Sudject;
 inline std::vector <Sudject*> sudjects;
 inline IDirect3DDevice9* Sudevice = nullptr;
 
+enum Type {
+	S_TEXT,
+	S_SHAPE,
+	S_WINDOW,
+	S_BUTTON
+};
+
 class Sudject {
 protected:
 	bool visible;
@@ -35,6 +42,7 @@ public:
 		children.push_back(&child);
 		child.parent = this;
 	}
+	virtual Type GetType() = 0;
 	bool IsVisible() { return visible; }
 	virtual void Draw() = 0;
 	virtual bool Valid() = 0;

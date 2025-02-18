@@ -3,10 +3,17 @@
 namespace sudsy 
 {
 	void Text::Draw() {
+		if (!Sudevice) { return; }
+		if (!Valid()) { return; }
+		if (!font.Valid()) { font.Create(); }
 
+		RECT r;
+		SetRect(&r, pos.x, pos.y, content.length() * 4, 5);
+		std::wstring s(content.begin(), content.end());
+		font.self->DrawText(NULL, s.c_str(), -1, &r, DT_LEFT | DT_NOCLIP, fontcolor.DirectX());
 	}
 	bool Text::Valid() {
-		return this->content.length() > 0;
+		return this->content.length() > 0 || (!font.Valid());
 	}
 	Text::Text()
 	{
@@ -15,6 +22,12 @@ namespace sudsy
 	Text::Text(std::string content)
 	{
 		this->content = content;
+
+	}
+	Text::Text(std::string content, Vec2 w)
+	{
+		this->content = content;
+		pos = w;
 	}
 	Text::Text(std::string content, int size)
 	{
@@ -33,7 +46,8 @@ namespace sudsy
 	void Text::SetFontSize(int size){
 		}
 	void Text::SetFontColor(Color color){
-		}
+		fontcolor = color;
+	}
 	void Text::SetFontShadow(bool shadow){
 		}
 	void Text::SetFontOutline(bool outline){

@@ -5,9 +5,7 @@ EndScene oEndScene;
 
 HRESULT __stdcall RenderScene(IDirect3DDevice9* pDevice);
 
-
-
-void sudsy::Init() {
+void HookD3D9() {
 	IDirect3D9* pD3D = Direct3DCreate9(D3D_SDK_VERSION);
 
 	if (!pD3D) { return; }
@@ -18,7 +16,7 @@ void sudsy::Init() {
 	d3dpp.Windowed = TRUE;
 
 	pD3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, d3dpp.hDeviceWindow, D3DCREATE_SOFTWARE_VERTEXPROCESSING, &d3dpp, &Sudevice);
-		
+
 	if (!Sudevice) {
 		d3dpp.Windowed = FALSE;
 		pD3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, d3dpp.hDeviceWindow, D3DCREATE_SOFTWARE_VERTEXPROCESSING, &d3dpp, &Sudevice);
@@ -35,6 +33,30 @@ void sudsy::Init() {
 
 	Sudevice->Release();
 	pD3D->Release();
+}
+
+void HookD3D10() {
+	
+}
+
+void HookD3D11() {
+
+}
+
+void HookD3D12() {
+
+}
+
+void sudsy::Init() {
+	if (GetModuleHandleA("d3d9.dll")) {
+		HookD3D9();
+	}
+	if (GetModuleHandleA("d3d11.dll")) {
+		HookD3D11();
+	}
+	if (GetModuleHandleA("d3d12.dll")) {
+		HookD3D12();
+	}
 }
 
 void DrawChildren(const std::vector<Sudject*>& childvec) {
@@ -71,9 +93,15 @@ void sudsy::Destroy() {
 
 }
 
+struct CUSTOMVERTEX
+{
+	FLOAT x, y, z, rhw; // The transformed position for the vertex
+	DWORD color;        // The vertex color
+};
+
 HRESULT __stdcall RenderScene(IDirect3DDevice9* pDevice) {
 	Sudevice = pDevice;
-	
+
 	sudsy::Render();
 
 	return oEndScene(pDevice);

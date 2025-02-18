@@ -7,9 +7,11 @@
 inline int _clmp(int to, int max, int min) {
 	if (to > max) {
 		to -= max;
+		return _clmp(to,max,min);
 	}
 	if (to < min) {
 		to = max - to;
+		return _clmp(to,max,min);
 	}
 	return to;
 }
@@ -17,9 +19,11 @@ inline int _clmp(int to, int max, int min) {
 inline float _fclmp(float to, float max, float min) {
 	if (to > max) {
 		to -= max;
+		return _fclmp(to, max, min);
 	}
 	if (to < min) {
 		to = max - to;
+		return _fclmp(to, max, min);
 	}
 	return to;
 }
@@ -91,6 +95,33 @@ struct Color {
 	}
 	D3DCOLOR DirectX() {
 		return D3DCOLOR_ARGB(a, r, g, b);
+	}
+	void HSLToColor(float h, float s, float l) {
+		float r, g, b;
+		h = _fclmp(h, 360, 0);
+		h /= 360;
+		auto hueToRgb = [](float p, float q, float t) {
+			if (t < 0.0f) t += 1.0f;
+			if (t > 1.0f) t -= 1.0f;
+			if (t < 1.0f / 6.0f) return p + (q - p) * 6.0f * t;
+			if (t < 1.0f / 2.0f) return q;
+			if (t < 2.0f / 3.0f) return p + (q - p) * (2.0f / 3.0f - t) * 6.0f;
+			return p;
+			};
+
+		if (s == 0.0f) {
+			r = g = b = l; // achromatic
+		}
+		else {
+			float q = l < 0.5f ? l * (1.0f + s) : l + s - l * s;
+			float p = 2.0f * l - q;
+			r = hueToRgb(p, q, h + 1.0f / 3.0f);
+			g = hueToRgb(p, q, h);
+			b = hueToRgb(p, q, h - 1.0f / 3.0f);
+		}
+
+		Set(static_cast<int>(r * 255.0f), static_cast<int>(g * 255.0f), static_cast<int>(b * 255.0f), a);
+		Clamp();
 	}
 };
 

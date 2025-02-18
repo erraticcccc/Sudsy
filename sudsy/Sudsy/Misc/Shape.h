@@ -2,7 +2,7 @@
 #include "misc/Sudject.h"
 
 #define D3DFVF_CUSTOMVERTEX (D3DFVF_XYZRHW | D3DFVF_DIFFUSE)
-#define CUSTOMFVF (D3DFVF_XYZ | D3DFVF_DIFFUSE)
+#define CUSTOMFVF (D3DFVF_XYZRHW | D3DFVF_DIFFUSE)
 
 namespace pd {
 	inline Color COLOR_WHITE = Color(255, 255, 255, 255);
@@ -10,13 +10,6 @@ namespace pd {
 	inline Vec2 VEC2ZERO = Vec2(0, 0);
 	inline Vec3 VEC3ZERO = Vec3(0, 0, 0);
 }
-
-enum Type {
-	LINE,
-	RECTANGLE,
-	CIRCLE,
-	TRIANGLE
-};
 
 struct Shape : public Sudject {
 	virtual Type GetType() = 0;
@@ -44,7 +37,7 @@ namespace Shapes {
 			thickness = t;
 			color = c;
 		}
-		Type GetType() { return LINE; }
+		Type GetType() { return S_SHAPE; }
 		ScreenPos GetPos() {
 			return ScreenPos(start, end);
 		}
@@ -110,6 +103,7 @@ namespace Shapes {
 		Color color = pd::COLOR_WHITE, outlinecol = pd::COLOR_WHITE;
 		int outlineoffset = 0;
 		bool filled = true, outline = false;
+		_VTX vtc[4];
 		Rectangle() {
 		}
 		Rectangle(Vec2 topleft, Vec2 bottomright) : tl(topleft), br(bottomright), bl(tl.x, br.y), tr(br.x, tl.y)
@@ -118,7 +112,7 @@ namespace Shapes {
 		Rectangle(Vec2 topleft, Vec2 bottomright, Color col) : color(col), tl(topleft), br(bottomright), bl(tl.x, br.y), tr(br.x, tl.y)
 		{
 		}
-		Type GetType() { return RECTANGLE; }
+		Type GetType() { return S_SHAPE; }
 		void SetColor(Color col) {
 			color = col;
 		}
@@ -140,32 +134,13 @@ namespace Shapes {
 			if (!Valid()) { return; }
 			if (!Sudevice) { return; }
 
-			LPDIRECT3DVERTEXBUFFER9 vBuffer;
-
-			_VTX OurVertices[] =
-			{
-				{ 0, 0, 0, 1.0f, D3DCOLOR_XRGB(127, 0, 0) },
-				{ 500, 0, 0, 1.0f, D3DCOLOR_XRGB(127, 0, 0) },
-				{ 0, 300, 0, 1.0f, D3DCOLOR_XRGB(127, 0, 0) },
-				{ 500, 300, 0, 1.0f, D3DCOLOR_XRGB(127, 0, 0) }
-			};
-
-			Sudevice->CreateVertexBuffer(4 * sizeof(_VTX),
-				0,
-				CUSTOMFVF,
-				D3DPOOL_MANAGED,
-				&vBuffer,
-				NULL);
-
-			VOID* pVoid;    // the void* we were talking about
-
-			vBuffer->Lock(0, 0, (void**)&pVoid, 0);    // locks v_buffer, the buffer we made earlier
-			memcpy(pVoid, OurVertices, sizeof(OurVertices));    // copy vertices to the vertex buffer
-			vBuffer->Unlock();    // unlock v_buffer
+			vtc[0] = { 0, 0, 0, 1.0f, color.DirectX()};
+			vtc[1] = { 500, 0, 0, 1.0f, color.DirectX() };
+			vtc[2] = { 0, 300, 0, 1.0f, color.DirectX() };
+			vtc[3] = { 500, 300, 0, 1.0f, color.DirectX() };
 
 			Sudevice->SetFVF(CUSTOMFVF);
-			Sudevice->SetStreamSource(0, vBuffer, 0, sizeof(_VTX));
-			Sudevice->DrawPrimitive(D3DPT_TRIANGLELIST, 0, 1);
+			Sudevice->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, vtc, sizeof(_VTX));
 		}
 	};
 	struct Circle : public Shape {
@@ -179,7 +154,7 @@ namespace Shapes {
 		bool Valid() {
 			return radius > 0;
 		}
-		Type GetType() { return CIRCLE; }
+		Type GetType() { return S_SHAPE; }
 		void Draw() {
 			if (!Valid()) { return; }
 			if (!Sudevice) { return; }

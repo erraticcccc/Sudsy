@@ -3,5 +3,7 @@
 
 namespace sudsy {
 	class Checkbox {
+		std::vector <Button> list;
+
 	};
 }

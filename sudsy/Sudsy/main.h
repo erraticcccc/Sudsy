@@ -7,19 +7,18 @@ namespace sudsy
 	// Not really going to be useful for the time, only going to be making DX9 based
 	enum DX {
 		DX9,
-		DX10,
 		DX11,
 		DX12
 	};
 	class Hook;
 	class Shader;
-	class Text; // Used in basically every class
+	class Text;
 	class Button;
 	class Image;
-	class Checkbox; // Builds off of button
+	class Checkbox;
 	class Slider;
-	class Entry; // Used for listbox
-	class Listbox; // Used for dropdown as well as its own listbox
+	class Entry;
+	class Listbox;
 	class Dropdown;
 	class Colorpicker;
 	class Groupbox;
