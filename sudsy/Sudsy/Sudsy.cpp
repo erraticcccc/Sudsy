@@ -29,7 +29,11 @@ void HookD3D9() {
 
 	auto pVTable = *reinterpret_cast<void***>(Sudevice);
 
+#if defined(_WIN64)
 	oEndScene = (EndScene)sudsy::hook.THook((BYTE*)pVTable[42], (BYTE*)&RenderScene, 7);
+#elif defined(_WIN32)
+	oEndScene = (EndScene)sudsy::hook.THook((BYTE*)pVTable[42], (BYTE*)&RenderScene, 7);
+#endif
 
 	Sudevice->Release();
 	pD3D->Release();

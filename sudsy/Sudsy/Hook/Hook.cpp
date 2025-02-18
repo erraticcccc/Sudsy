@@ -4,7 +4,7 @@ namespace sudsy
 {
 	// Two args: Target function, which will be replaced, and the replacement function, which will replace the target function
 
-#ifdef _WIN32
+#if defined(_WIN32) && !defined(_WIN64)
 
 	BYTE* Hook::THook(BYTE* toHook, BYTE* from, int amount) {
 		// to is the function you want to hook, from is the function
@@ -33,7 +33,7 @@ namespace sudsy
 		return stolenBytes;
 	}
 
-#elif _WIN64
+#elif defined(_WIN64)
 
 	BYTE* Hook::THook(BYTE* toHook, BYTE* from, int amount) {
 		// to is the function you want to hook, from is the function

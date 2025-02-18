@@ -1,12 +1,12 @@
 #include "../sudsy/Sudsy/Sudsy.h"
 
-#if defined(_WIN32) && !defined(_WIN64)
-
-#pragma comment(lib,"sudsy_x86.lib")
-
-#elif defined(_WIN64)
+#if defined(_WIN64)
 
 #pragma comment(lib,"sudsy_x64.lib")
+
+#elif defined(_WIN32)
+
+#pragma comment(lib,"sudsy_x86.lib")
 
 #endif
 
