@@ -13,8 +13,8 @@ namespace pd {
 
 struct Shape : public Sudject {
 	virtual Type GetType() = 0;
-	virtual void Draw() = 0;
-	virtual void SetColor(Color color) = 0;
+	virtual inline void Draw() = 0;
+	virtual void SetColor(const Color &color) = 0;
 	virtual void SetThickness(float thickness) = 0;
 	virtual void SetFilled(bool filled) = 0;
 	virtual float Area() = 0;
@@ -46,7 +46,7 @@ namespace Shapes {
 			float sideb = end.x - start.x;
 			return sidea * sideb;
 		}
-		void Draw() {
+		inline void Draw() {
 			if (!Valid()) { return; }
 			if (!Sudevice) { return; }
 
@@ -76,7 +76,7 @@ namespace Shapes {
 			}
 
 		}
-		void SetColor(Color color) {
+		void SetColor(const Color &color) {
 			this->color = color;
 		}
 		void SetThickness(float thickness) {
@@ -103,8 +103,6 @@ namespace Shapes {
 		Color color = pd::COLOR_WHITE, outlinecol = pd::COLOR_WHITE;
 		int outlineoffset = 0;
 		bool filled = true, outline = false;
-		_VTX vtc[4];
-		D3DXVECTOR2 vtx[5];
 		Rectangle() {
 		}
 		Rectangle(Vec2 topleft, Vec2 bottomright) : tl(topleft), br(bottomright), bl(topleft.x, bottomright.y), tr(bottomright.x, topleft.y)
@@ -114,7 +112,7 @@ namespace Shapes {
 		{
 		}
 		Type GetType() { return S_SHAPE; }
-		void SetColor(Color col) {
+		void SetColor(const Color& col) {
 			color = col;
 		}
 		ScreenPos GetPos() {
@@ -131,7 +129,7 @@ namespace Shapes {
 		void SetVisible(bool v) {
 			visible = v;
 		}
-		void Draw() {
+		inline void Draw() {
 			if (!Valid()) { return; }
 			if (!Sudevice) { return; }
 			
@@ -159,13 +157,6 @@ namespace Shapes {
 					pLine->Draw(line, 2, color.DirectX());
 				}
 			}
-			//vtc[0] = { 0, 0, 0, 1.0f, color.DirectX()};
-			//vtc[1] = { 500, 0, 0, 1.0f, color.DirectX() };
-			//vtc[2] = { 0, 300, 0, 1.0f, color.DirectX() };
-			//vtc[3] = { 500, 300, 0, 1.0f, color.DirectX() };
-
-			//Sudevice->SetFVF(CUSTOMFVF);
-			//Sudevice->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, vtc, sizeof(_VTX));
 		}
 	};
 	struct Circle : public Shape {
@@ -180,7 +171,7 @@ namespace Shapes {
 			return radius > 0;
 		}
 		Type GetType() { return S_SHAPE; }
-		void Draw() {
+		inline void Draw() {
 			if (!Valid()) { return; }
 			if (!Sudevice) { return; }
 
