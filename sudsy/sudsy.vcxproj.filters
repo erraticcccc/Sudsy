@@ -1,0 +1,105 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Extern">
+      <UniqueIdentifier>{56a7c912-9884-45ac-aff2-4d796ad79b36}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Classes">
+      <UniqueIdentifier>{79b63536-9cda-4cdc-9c25-1d839bbd61b3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Includes">
+      <UniqueIdentifier>{2fdd01cb-b4c2-4458-8e22-c7040c1909ee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Classes\Button">
+      <UniqueIdentifier>{0089225a-edee-4024-802f-aea45b5c600f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Classes\Hook">
+      <UniqueIdentifier>{5aa74317-9ed2-4510-a80d-67ef8cd716ee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Classes\Text">
+      <UniqueIdentifier>{74ee44c6-60f3-4eea-b589-e99775640a6e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Classes\Window">
+      <UniqueIdentifier>{b83727e6-5e95-450b-9cda-a0dba617278b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Classes\Checkbox">
+      <UniqueIdentifier>{f715dea5-737b-470e-97f1-619d33c3fe1f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Classes\Image">
+      <UniqueIdentifier>{7f008d84-6b1f-44cc-b922-bb71851f649e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Classes\Shape">
+      <UniqueIdentifier>{a45fd61e-0b95-4022-91d3-e3e7ee565745}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Classes\Base Class">
+      <UniqueIdentifier>{56360af3-7cd8-41cb-a258-aab888a29785}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Classes\Storage Classes">
+      <UniqueIdentifier>{de9c7560-7b1a-42ca-a585-63b06c838baa}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Sudsy\Sudsy.cpp">
+      <Filter>Extern</Filter>
+    </ClCompile>
+    <ClCompile Include="Sudsy\Button\button.cpp">
+      <Filter>Classes\Button</Filter>
+    </ClCompile>
+    <ClCompile Include="Sudsy\Hook\Hook.cpp">
+      <Filter>Classes\Hook</Filter>
+    </ClCompile>
+    <ClCompile Include="Sudsy\Text\text.cpp">
+      <Filter>Classes\Text</Filter>
+    </ClCompile>
+    <ClCompile Include="Sudsy\Window\window.cpp">
+      <Filter>Classes\Window</Filter>
+    </ClCompile>
+    <ClCompile Include="Sudsy\Checkbox\checkbox.cpp">
+      <Filter>Classes\Checkbox</Filter>
+    </ClCompile>
+    <ClCompile Include="Sudsy\Image\Image.cpp">
+      <Filter>Classes\Image</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Sudsy\Sudsy.h">
+      <Filter>Extern</Filter>
+    </ClInclude>
+    <ClInclude Include="Sudsy\main.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="Sudsy\common.h">
+      <Filter>Includes</Filter>
+    </ClInclude>
+    <ClInclude Include="Sudsy\Button\button.h">
+      <Filter>Classes\Button</Filter>
+    </ClInclude>
+    <ClInclude Include="Sudsy\Hook\Hook.h">
+      <Filter>Classes\Hook</Filter>
+    </ClInclude>
+    <ClInclude Include="Sudsy\Text\text.h">
+      <Filter>Classes\Text</Filter>
+    </ClInclude>
+    <ClInclude Include="Sudsy\Window\window.h">
+      <Filter>Classes\Window</Filter>
+    </ClInclude>
+    <ClInclude Include="Sudsy\Checkbox\checkbox.h">
+      <Filter>Classes\Checkbox</Filter>
+    </ClInclude>
+    <ClInclude Include="Sudsy\Image\Image.h">
+      <Filter>Classes\Image</Filter>
+    </ClInclude>
+    <ClInclude Include="Sudsy\Misc\Sudject.h">
+      <Filter>Classes\Base Class</Filter>
+    </ClInclude>
+    <ClInclude Include="Sudsy\Misc\Storage.h">
+      <Filter>Classes\Storage Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="Sudsy\Misc\Shape.h">
+      <Filter>Classes\Shape</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\README.md" />
+  </ItemGroup>
+</Project>
