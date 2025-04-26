@@ -101,5 +101,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\README.md" />
+    <None Include="Shapes.md">
+      <Filter>Classes\Shape</Filter>
+    </None>
+    <None Include="Storage.md">
+      <Filter>Classes\Storage Classes</Filter>
+    </None>
   </ItemGroup>
 </Project>

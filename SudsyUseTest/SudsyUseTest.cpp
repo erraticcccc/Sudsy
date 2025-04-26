@@ -12,24 +12,15 @@
 
 void MainThread() {
 
-	Color red(255, 0, 0, 255);
 	Color blue(0, 0, 255, 255);
 	Vec2  pos(300, 300);
-	Vec2  tl(0);
-	Vec2  br(0);
 
-	sudsy::Text t("",13,red);
-	sudsy::Text other("",13,blue);
-	other.SetPos(pos);
+	sudsy::Text example("example",13,blue);
+	example.SetPos(pos);
 
 	sudsy::Init();
 
-	int hello = 0;
 	while (true) {
-		hello++;
-		t = (int)sudsy::test;
-		other = hello;
-
 		Sleep(10);
 	}
 
