@@ -10,6 +10,12 @@ namespace sudsy
 		DX11,
 		DX12
 	};
+	enum clicks {
+		none = 0,
+		lb,
+		rb,
+		mb
+	};
 	class Hook;
 	class Shader;
 	class Text;
@@ -25,12 +31,13 @@ namespace sudsy
 	class Tab;
 	class Panel;
 	class Window;
-	inline POINT MousePos = { 0,0 };
+	inline Vec2 MousePos = { 0,0 };
 	inline RECT WPos = { 0,0,0,0 };
 	inline HWND WHandle = NULL;
-	inline UINT test = 0;
+	inline clicks MClick = none;
 	void UpdateMousePos();
 	void UpdateWindowPos();
+	void ProcessButtons();
 	void Init();
 	void Render();
 	void Destroy();

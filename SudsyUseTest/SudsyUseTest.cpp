@@ -13,14 +13,49 @@
 void MainThread() {
 
 	Color blue(0, 0, 255, 255);
-	Vec2  pos(300, 300);
+	Color green(0, 255, 120, 255);
+	Vec2  pos(0, 0);
+	Vec2  offset(300, 300);
 
-	sudsy::Text example("example",13,blue);
-	example.SetPos(pos);
+	Shapes::Rectangle box(offset, offset + offset,green);
+	Shapes::Circle circle(offset,50,blue);
+	circle.SetVisible(false);
+
+	sudsy::Button button("Hello!", box);
+
+	int switcher = 0;
+	bool show = true;
+	button.SetClickFunction([&](sudsy::clicks c) {
+			if (c == sudsy::lb) {
+				if (switcher) {
+					button.SetShape(circle);
+					box.SetVisible(false);
+					circle.SetVisible(true);
+					switcher = 0;
+				}
+				else {
+					button.SetShape(box);
+					circle.SetVisible(false);
+					box.SetVisible(true);
+					switcher = 1;
+				}
+			}
+			if (c == sudsy::rb) {
+				if (show) {
+					button.SetVisible(true);
+					show = false;
+				}
+				else {
+					button.SetVisible(false);
+					show = true;
+				}
+			}
+		});
 
 	sudsy::Init();
 
 	while (true) {
+		box.SetColor(green);
 		Sleep(10);
 	}
 

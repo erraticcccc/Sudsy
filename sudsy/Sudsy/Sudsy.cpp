@@ -5,18 +5,59 @@ EndScene oEndScene;
 
 HRESULT __stdcall RenderScene(IDirect3DDevice9* pDevice);
 
-WNDPROC oWndProc;
-LRESULT wndProc(HWND h, UINT msg, WPARAM wparam, LPARAM lparam) {
-	if (msg == WM_LBUTTONDBLCLK)
-		sudsy::test = msg;
+void sudsy::ProcessButtons();
+
+WNDPROC oWndProc = NULL;
+LRESULT CALLBACK wndProc(HWND h, UINT code, WPARAM wparam, LPARAM lparam) {
 	
-	return CallWindowProc(oWndProc,h,msg,wparam,lparam);
+	switch (code) {
+	default:
+		sudsy::MClick = sudsy::none;
+		break;
+	case WM_LBUTTONDOWN:
+		sudsy::MClick = sudsy::lb;
+		sudsy::ProcessButtons();
+		break;
+	case WM_RBUTTONDOWN:
+		sudsy::MClick = sudsy::rb;
+		sudsy::ProcessButtons();
+		break;
+	case WM_MBUTTONDOWN:
+		sudsy::MClick = sudsy::mb;
+		sudsy::ProcessButtons();
+		break;
+	}
+
+	return CallWindowProc(oWndProc,h,code,wparam,lparam);
+}
+
+HWND hMainWindow;
+
+BOOL CALLBACK EnumWindowsProc(HWND hWindow, LPARAM lpReserved)
+{
+	DWORD dwProcessID;
+	GetWindowThreadProcessId(hWindow, &dwProcessID);
+
+	if (dwProcessID != GetCurrentProcessId()) return true;
+	if (GetWindow(hWindow, GW_OWNER) != NULL) return true;
+	if (!IsWindowVisible(hWindow)) return true;
+
+	hMainWindow = hWindow;
+	return false;
+}
+
+bool GetMainWindow()
+{
+	if (IsWindow(hMainWindow)) return true;
+
+	EnumWindows(EnumWindowsProc, 0);
+
+	return IsWindow(hMainWindow);
 }
 
 void HookWndProc() {
 	oWndProc = (WNDPROC)SetWindowLongPtr(sudsy::WHandle, GWLP_WNDPROC, (LONG_PTR)wndProc);
 	if (!oWndProc) {
-		sudsy::test = GetWindowThreadProcessId(sudsy::WHandle, NULL) == GetCurrentThreadId();
 	}
 }
 
@@ -25,8 +66,10 @@ void HookD3D9() {
 
 	if (!pD3D) { return; }
 
+	GetMainWindow();
+
 	D3DPRESENT_PARAMETERS d3dpp = { 0 };
-	d3dpp.hDeviceWindow = sudsy::WHandle = GetForegroundWindow();
+	d3dpp.hDeviceWindow = sudsy::WHandle = hMainWindow;
 	d3dpp.SwapEffect = D3DSWAPEFFECT_DISCARD;
 	d3dpp.Windowed = TRUE;
 
@@ -81,6 +124,7 @@ void sudsy::Init() {
 
 void DrawChildren(const std::vector<Sudject*>& childvec) {
 	for (auto& children : childvec) {
+		if (!children->GetParent()->IsVisible()) { continue; }
 		if (!children->Valid()) { continue; }
 		children->Draw();
 		if (!children->GetChildren().empty()) {
@@ -98,13 +142,13 @@ void sudsy::Render() {
 		return depthA < depthB; // Parents come before children
 	});
 
-	for (auto& suds : sudjects) {
-		if (!suds->IsVisible()) { continue; }
-		if (!suds->Valid()) { continue; }
-		if (suds->GetParent()) { continue; }
-		suds->Draw();
-		if (!suds->GetChildren().empty()) {
-			DrawChildren(suds->GetChildren());
+	for (auto& sud : sudjects) {
+		if (!sud->IsVisible()) { continue; }
+		if (!sud->Valid()) { continue; }
+		if (sud->GetParent()) { continue; }
+		sud->Draw();
+		if (!sud->GetChildren().empty()) {
+			DrawChildren(sud->GetChildren());
 		}
 	}
 }
@@ -113,16 +157,30 @@ void sudsy::Destroy() {
 	sudsy::hook.ToggleHook();
 }
 
+POINT faggot;
 void sudsy::UpdateMousePos() {
 	// Obtain mousepos relative to window
 	if (!sudsy::WHandle) { return; }
-	GetCursorPos(&sudsy::MousePos);
-	ScreenToClient(sudsy::WHandle, &sudsy::MousePos);
+	GetCursorPos(&faggot);
+	ScreenToClient(sudsy::WHandle, &faggot);
+	sudsy::MousePos.Set(faggot.x, faggot.y);
 }
 
 void sudsy::UpdateWindowPos() {
 	if (!sudsy::WHandle) { return; }
 	GetWindowRect(sudsy::WHandle, &sudsy::WPos);
+}
+
+void sudsy::ProcessButtons() {
+	if (sudjects.empty()) { return; } // Somethings wrong || there is no buttons anyway
+	for (Sudject *& sud : sudjects) {
+		if (!sud->Valid()) { continue; }
+		if (sud->GetType() != S_BUTTON) { continue; }
+		ScreenPos p = sud->GetPos();
+		if (!sudsy::MousePos.Bounds(p.start, p.end)) { continue; }
+		Button* button = (Button*)sud;
+		button->Click(sudsy::MClick);
+	}
 }
 
 HRESULT __stdcall RenderScene(IDirect3DDevice9* pDevice) {

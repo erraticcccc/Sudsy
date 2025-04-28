@@ -31,7 +31,6 @@ namespace sudsy
 	{
 		std::string content = "";
 		Vec2 pos = pd::VEC2ZERO;
-		Sudject* parent = nullptr;
 		int fontSize = 0;
 		Color fontcolor = pd::COLOR_WHITE; // not even sure if this is going to be possible
 		bool shadow = false, rightaligned = false, outline = false, centered = false;
@@ -63,7 +62,6 @@ namespace sudsy
 		~Text();
 		void SetPos(Vec2 p) { pos = p; }
 		ScreenPos GetPos();
-		void SetParent(Sudject* par) { parent = par; }
 		void Draw();
 		bool Valid();
 		void SetVisible(bool v) {

@@ -4,13 +4,6 @@
 #define D3DFVF_CUSTOMVERTEX (D3DFVF_XYZRHW | D3DFVF_DIFFUSE)
 #define CUSTOMFVF (D3DFVF_XYZRHW | D3DFVF_DIFFUSE)
 
-namespace pd {
-	inline Color COLOR_WHITE = Color(255, 255, 255, 255);
-	inline Color COLOR_BLACK = Color(0, 0, 0, 255);
-	inline Vec2 VEC2ZERO = Vec2(0, 0);
-	inline Vec3 VEC3ZERO = Vec3(0, 0, 0);
-}
-
 struct Shape : public Sudject {
 	virtual Type GetType() = 0;
 	virtual inline void Draw() = 0;
@@ -25,12 +18,7 @@ namespace Shapes {
 		Vec2 start, end;
 		float thickness;
 		Color color;
-		Line() {
-			start = Vec2(0.f, 0.f);
-			end = Vec2(0.f, 0.f);
-			thickness = 1.f;
-			color = pd::COLOR_WHITE;
-		}
+		Line() : start(pd::VEC2ZERO), end(pd::VEC2ZERO), thickness(1.f), color (pd::COLOR_WHITE) {}
 		Line(Vec2 s, Vec2 e, float t, Color c) {
 			start = s;
 			end = e;
@@ -103,14 +91,9 @@ namespace Shapes {
 		Color color = pd::COLOR_WHITE, outlinecol = pd::COLOR_WHITE;
 		int outlineoffset = 0;
 		bool filled = true, outline = false;
-		Rectangle() {
-		}
-		Rectangle(Vec2 topleft, Vec2 bottomright) : tl(topleft), br(bottomright), bl(topleft.x, bottomright.y), tr(bottomright.x, topleft.y)
-		{
-		}
-		Rectangle(Vec2 topleft, Vec2 bottomright, Color col) : color(col), tl(topleft), br(bottomright), bl(topleft.x, bottomright.y), tr(bottomright.x, topleft.y)
-		{
-		}
+		Rectangle() : tl(pd::VEC2ZERO), tr(pd::VEC2ZERO), bl(pd::VEC2ZERO), br(pd::VEC2ZERO) {}
+		Rectangle(Vec2 topleft, Vec2 bottomright) : tl(topleft), br(bottomright), bl(topleft.x, bottomright.y), tr(bottomright.x, topleft.y) {}
+		Rectangle(Vec2 topleft, Vec2 bottomright, Color col) : color(col), tl(topleft), br(bottomright), bl(topleft.x, bottomright.y), tr(bottomright.x, topleft.y) {}
 		Type GetType() { return S_SHAPE; }
 		void SetColor(const Color& col) {
 			color = col;
@@ -123,6 +106,19 @@ namespace Shapes {
 		}
 		void SetThickness(float thickness) {}
 		void SetFilled(bool filled) {}
+		void SetPos(Vec2 topleft, Vec2 bottomright) {
+			tl = topleft;
+			br = bottomright;
+			tr = { br.x, tl.y };
+			bl = { tl.x, br.y };
+		}
+		void SetPos(Vec2 topleft) {
+			Vec2 dif = br - tl;
+			tl = topleft;
+			br = tl + dif;
+			tr = { br.x, topleft.y };
+			bl = { topleft.x, br.y };
+		}
 		bool Valid() {
 			return tl.distance(br) > 0;
 		}
@@ -132,7 +128,7 @@ namespace Shapes {
 		inline void Draw() {
 			if (!Valid()) { return; }
 			if (!Sudevice) { return; }
-			
+
 			static ID3DXLine* pLine = nullptr;
 
 			if (!pLine)
@@ -202,7 +198,8 @@ namespace Shapes {
 			return ::sqrtf(D3DX_PI * (radius * radius));
 		}
 		ScreenPos GetPos() {
-			return ScreenPos(center, center);
+			Vec2 rvec = Vec2(radius);
+			return ScreenPos(center - rvec, center + rvec);
 		}
 		void SetVisible(bool vis) {
 			visible = vis;
@@ -214,8 +211,12 @@ namespace Shapes {
 	};
 	struct Triangle : public Shape {
 		Vec2 a, b, c;
-		float linethickness;
-		Color color;
-		bool filled;
+		float linethickness = 1.f;
+		Color color = pd::COLOR_WHITE;
+		bool filled = true;
+		Triangle() : a(pd::VEC2ZERO), b(pd::VEC2ZERO), c(pd::VEC2ZERO) {}
+		Triangle(Vec2 x, Vec2 y, Vec2 z) : a(x), b(y), c(z) {}
+		Triangle(Vec2 p, float r) : a(p.x - r,p.y - r), b(p.x + r, p.y + r), c(p.x, p.y - r) {}
+
 	};
 }

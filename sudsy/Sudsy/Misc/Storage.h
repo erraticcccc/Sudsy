@@ -30,6 +30,15 @@ inline float _fclmp(float to, float max, float min) {
 	return to;
 }
 
+inline void bounds(float boundsmin, float boundsmax, float pos, bool& b) {
+	if (boundsmax < pos) {
+		b = false;
+	}
+	else if (boundsmin > pos) {
+		b = true;
+	}
+}
+
 inline std::vector<byte> capbytes(byte* loc, int amt) {
 	std::vector <byte> p;
 	for (int i = 0; i < amt; i++) {
@@ -215,28 +224,34 @@ struct Vec2
 		y = _fclmp(y, maxy, miny);
 	}
 
-	void bounds(float boundsmin, float boundsmax, float pos, bool& b) {
-		if (boundsmax < pos) {
-			b = false;
-		}
-		else if (boundsmin > pos) {
-			b = true;
-		}
-	}
-
 	std::string str() {
 		return (std::to_string(x) + ", " + std::to_string(y));
 	}
 
+	bool Bounds(Vec2 b, Vec2 e) {
+		return (
+				x >= b.x && x <= e.x &&
+				y >= b.y && y <= e.y
+				);
+	}
+	
 	D3DXVECTOR2 ToDirectX()
 	{
 		return D3DXVECTOR2(x, y);
 	}
 };
 
+namespace pd {
+	inline Color COLOR_WHITE = Color(255, 255, 255, 255);
+	inline Color COLOR_BLACK = Color(0, 0, 0, 255);
+	inline Vec2 VEC2ZERO = Vec2(0, 0);
+	inline Vec3 VEC3ZERO = Vec3(0, 0, 0);
+}
+
 struct ScreenPos {
 	Vec2 start, end;
-	ScreenPos(Vec2& s, Vec2& e) : start(s), end(e) {}
+	ScreenPos() : start(pd::VEC2ZERO), end(pd::VEC2ZERO) {}
+	ScreenPos(Vec2 s, Vec2 e) : start(s), end(e) {}
 };
 
 struct _VTX {

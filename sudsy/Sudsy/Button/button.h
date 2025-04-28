@@ -1,31 +1,29 @@
 #pragma once
 
 #include "Text/text.h"
-
-typedef bool (*bfunc)();
+#include <functional>
 
 namespace sudsy {
 	class Button : public Sudject {
-		Sudject* parent;
-		Sudject* child;
-		Vec2 pos;
-		Vec2 size;
-		Color color;
-		Color hovercolor;
-		Color clickcolor;
-		bool toggle;
-		bfunc ClickFunction = nullptr;
-	public:
+		Shape*   bShape = nullptr;
 		sudsy::Text text;
-		Button();
-		Button(std::string content) : parent(nullptr), child(nullptr), text(Text(content)) {}
-		Button(std::string content, float size);
-		Button(std::string content, Vec2 size);
-		Button(std::string content, float size, Color color);
-		void SetColor(Color col);
+		Color hovercolor = pd::COLOR_WHITE;
+		Color clickcolor = pd::COLOR_WHITE;
+	public:
+		std::function<void(sudsy::clicks)> Click = nullptr;
+		std::function<void(sudsy::clicks)> Paint = [](sudsy::clicks = none) -> void {};
+		Button() : text("") {}
+		Button(std::string content) : text(content) {}
+		Button(std::string content, Shape& shape) : text(content), bShape(&shape) { AddChild(*bShape); bShape->AddChild(text); }
+		Button(std::string content, Shape& shape, std::function<void(sudsy::clicks)> function) : text(content), bShape(&shape), Click(function) { AddChild(*bShape); bShape->AddChild(text); }
 		void SetClickColor(Color color);
 		void SetHoverColor(Color color);
-		void Click() { if (ClickFunction != nullptr) { ClickFunction(); } };
-		void Paint();
+		void SetShape(Shape &shape) { bShape = &shape; }
+		Type GetType();
+		void Draw() {};
+		bool Valid();
+		void SetClickFunction(std::function<void(sudsy::clicks)> f) { Click = f; }
+		ScreenPos GetPos() { return bShape->GetPos(); }
+		void SetVisible(bool vis) ;
 	};
 }

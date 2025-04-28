@@ -8,8 +8,15 @@ namespace sudsy
 		if (!font.Valid()) { font.Create(); }
 
 		RECT r;
-		SetRect(&r, pos.x, pos.y, content.length() * 4, 5);
-		font.self->DrawText(NULL, content.c_str(), -1, &r, DT_LEFT | DT_NOCLIP, fontcolor.DirectX());
+		if (!parent) {
+			SetRect(&r, pos.x, pos.y, content.length() * 4, 5);
+			font.self->DrawText(NULL, content.c_str(), -1, &r, DT_LEFT | DT_NOCLIP, fontcolor.DirectX());
+		}
+		else {
+			auto p = parent->GetPos();
+			SetRect(&r, pos.x + p.start.x, pos.y + p.start.y, content.length() * 4 + p.end.x, 5 + p.end.y);
+			font.self->DrawText(NULL, content.c_str(), -1, &r, DT_LEFT | DT_NOCLIP, fontcolor.DirectX());
+		}
 	}
 	bool Text::Valid() {
 		return this->content.length() > 0 && (font.Valid());

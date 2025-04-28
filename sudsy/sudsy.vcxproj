@@ -43,8 +43,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\README.md" />
-    <None Include="Shapes.md" />
-    <None Include="Storage.md" />
+    <None Include="Sudsy\Misc\Shapes.md" />
+    <None Include="Sudsy\Misc\Storage.md" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
