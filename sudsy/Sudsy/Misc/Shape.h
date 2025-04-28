@@ -120,7 +120,12 @@ namespace Shapes {
 			bl = { topleft.x, br.y };
 		}
 		bool Valid() {
-			return tl.distance(br) > 0;
+			if (parent) {
+				return ((tl != pd::VEC2ZERO) && (br != pd::VEC2ZERO));
+			}
+			else {
+				return tl.distance(br) > 0;
+			}
 		}
 		void SetVisible(bool v) {
 			visible = v;
@@ -134,7 +139,7 @@ namespace Shapes {
 			if (!pLine)
 				D3DXCreateLine(Sudevice, &pLine);
 
-			if (parent) {
+			if (parent && parent->GetType() == S_SHAPE) {
 				ScreenPos pp = parent->GetPos();
 				for (float i = tl.y + pp.start.y; i < pp.end.y - br.y; ++i) {
 					D3DXVECTOR2 line[] = {
@@ -174,8 +179,15 @@ namespace Shapes {
 			const int numSegments = 36;
 			_VTX vertices[numSegments + 2];
 
-			vertices[0].x = center.x;
-			vertices[0].y = center.y;
+			if (parent && parent->GetType() == S_SHAPE) {
+				ScreenPos p = parent->GetPos();
+				vertices[0].x = center.x + ((p.end.x - p.start.x)/2 + p.start.x);
+				vertices[0].y = center.y + ((p.end.y - p.start.y)/2 + p.start.y);
+			}
+			else {
+				vertices[0].x = center.x;
+				vertices[0].y = center.y;
+			}
 			vertices[0].z = 0.0f;
 			vertices[0].rhw = 1.0f;
 			vertices[0].color = color.DirectX();

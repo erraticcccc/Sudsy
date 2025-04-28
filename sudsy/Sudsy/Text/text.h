@@ -25,6 +25,14 @@ struct Font {
 	}
 };
 
+enum alignment {
+	ALIGN_NONE = 0,
+	ALIGN_RIGHT,
+	ALIGN_LEFT,
+	ALIGN_TOP,
+	ALIGN_BOTTOM
+};
+
 namespace sudsy
 {
 	class Text : public Sudject
@@ -32,13 +40,8 @@ namespace sudsy
 		std::string content = "";
 		Vec2 pos = pd::VEC2ZERO;
 		int fontSize = 0;
-		Color fontcolor = pd::COLOR_WHITE; // not even sure if this is going to be possible
+		Color fontcolor = pd::COLOR_WHITE;
 		bool shadow = false, rightaligned = false, outline = false, centered = false;
-		int offsetx = 0, offsety = 0;
-		int shadowoffsetx = 0, shadowoffsety = 0;
-		int outlineoffsetx = 0, outlineoffsety = 0;
-		int centeredoffsetx = 0, centeredoffsety = 0;
-		int rightalignedoffsetx = 0, rightalignedoffsety = 0;
 		Color shadowcolor = pd::COLOR_BLACK, outlinecolor = pd::COLOR_BLACK;
 		Type type = S_TEXT;
 	public:
@@ -49,15 +52,7 @@ namespace sudsy
 		Text(std::string content, Vec2 pos, Color col);
 		Text(std::string content, int size);
 		Text(std::string content, int size, Color col);
-		void SetFont(std::string font);
-		void SetFontSize(int size);
-		void SetFontColor(Color color);
-		void SetFontShadow(bool shadow);
-		void SetFontOutline(bool outline);
-		void SetFontCentered(bool centered);
-		void SetFontRightAligned(bool rightaligned);
-		void SetFontOutlineColor(Color color);
-		void SetFontShadowColor(Color color);
+		void SetFont(Font font);
 		Type GetType() { return type; }
 		~Text();
 		void SetPos(Vec2 p) { pos = p; }

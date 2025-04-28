@@ -18,6 +18,7 @@ protected:
 	bool visible;
 	Sudject* parent;
 	std::vector <Sudject*> children;
+	Sudject *self = this;
 public:
 	Sudject() {
 		parent = nullptr;
@@ -38,9 +39,15 @@ public:
 	Sudject* GetChild(int index) {
 		return children[index];
 	}
-	void AddChild(Sudject& child) {
+	Sudject* AddChild(Sudject& child) {
 		children.push_back(&child);
 		child.parent = this;
+		return &child;
+	}
+	Sudject* RemoveChild(int index) {
+		Sudject* ch = GetChild(index)->parent = nullptr;
+		children.erase(children.begin() + index);
+		return ch;
 	}
 	virtual Type GetType() = 0;
 	bool IsVisible() { return visible; }

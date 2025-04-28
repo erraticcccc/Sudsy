@@ -10,52 +10,71 @@
 
 #endif
 
+int thing = 0;
+
+void testClick(sudsy::clicks c) {
+	if (c == sudsy::lb) {
+		thing++;
+	}
+	if (c == sudsy::rb) {
+		thing--;
+	}
+}
+
 void MainThread() {
 
 	Color blue(0, 0, 255, 255);
 	Color green(0, 255, 120, 255);
-	Vec2  pos(0, 0);
+	Color offgreen(0, 240, 170, 255);
+	Vec2  pos(10, 10);
 	Vec2  offset(300, 300);
 
-	Shapes::Rectangle box(offset, offset + offset,green);
-	Shapes::Circle circle(offset,50,blue);
-	circle.SetVisible(false);
+	sudsy::Button button("Hello!");
+	Shapes::Rectangle box(offset, offset + (offset/5), green);
+	Shapes::Rectangle box2(pos, pos, blue);
+	box.AddChild(box2);
 
-	sudsy::Button button("Hello!", box);
+	Shapes::Circle circle(offset,50,blue);
+
+	circle.SetVisible(false);
+	button.SetShape(box);
 
 	int switcher = 0;
 	bool show = true;
-	button.SetClickFunction([&](sudsy::clicks c) {
+	button = ([&](sudsy::clicks c) {
 			if (c == sudsy::lb) {
 				if (switcher) {
-					button.SetShape(circle);
-					box.SetVisible(false);
 					circle.SetVisible(true);
+					box.SetVisible(false);
+					button.SetShape(circle);
 					switcher = 0;
 				}
 				else {
-					button.SetShape(box);
-					circle.SetVisible(false);
 					box.SetVisible(true);
+					circle.SetVisible(false);
+					button.SetShape(box);
 					switcher = 1;
 				}
 			}
 			if (c == sudsy::rb) {
 				if (show) {
-					button.SetVisible(true);
+					button.SetVisible(show);
 					show = false;
 				}
 				else {
-					button.SetVisible(false);
+					button.SetVisible(show);
 					show = true;
 				}
 			}
 		});
 
+	button = testClick;
+
 	sudsy::Init();
 
 	while (true) {
-		box.SetColor(green);
+		box.SetColor(offgreen);
+		button = thing;
 		Sleep(10);
 	}
 

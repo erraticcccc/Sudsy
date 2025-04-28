@@ -214,6 +214,18 @@ struct Vec2
 	void operator+=(Vec2 other) {
 		this->Set(other.x + this->x, other.y + this->y);
 	}
+	bool operator==(Vec2 other) {
+		return (x == other.x && y == other.y);
+	}
+	bool operator!=(Vec2 other) {
+		return (x != other.x || y != other.y);
+	}
+	Vec2 operator/(float v) {
+		if (v)
+			return Vec2(x / v, y / v);
+
+		return *this;
+	}
 
 	float distance(Vec2 other) {
 		return HYPOTENUSE(fabs(other.x - this->x), fabs(other.y - this->y));
@@ -244,6 +256,7 @@ struct Vec2
 namespace pd {
 	inline Color COLOR_WHITE = Color(255, 255, 255, 255);
 	inline Color COLOR_BLACK = Color(0, 0, 0, 255);
+	inline Color COLOR_NONE = Color(0, 0, 0, 0);
 	inline Vec2 VEC2ZERO = Vec2(0, 0);
 	inline Vec3 VEC3ZERO = Vec3(0, 0, 0);
 }
