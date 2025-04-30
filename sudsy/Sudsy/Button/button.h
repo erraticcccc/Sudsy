@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Text/text.h"
-#include <functional>
 
 namespace sudsy {
 	class Button : public Sudject {
@@ -23,8 +22,9 @@ namespace sudsy {
 		void Draw() {};
 		bool Valid() { return (Click && Paint && GetChild(0)); }
 		void SetClickFunction(std::function<void(sudsy::clicks)> f) { Click = f; }
-		ScreenPos GetPos() { return GetChild(0)->GetPos(); }
+		ScreenPos GetPos() { return GetShape()->GetPos(); }
 		void SetVisible(bool vis) { visible = vis; }
+		void SetColor(const Color& color) { GetShape()->SetColor(color); }
 	public:
 		void operator=(std::string t) {
 			text = t;

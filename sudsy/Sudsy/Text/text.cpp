@@ -10,12 +10,20 @@ namespace sudsy
 		RECT r;
 		if (!parent) {
 			SetRect(&r, pos.x, pos.y, content.length() * 4, 5);
-			font.self->DrawText(NULL, content.c_str(), -1, &r, DT_LEFT | DT_NOCLIP, fontcolor.DirectX());
+			font.self->DrawText(NULL, content.c_str(), -1, &r, DT_LEFT | DT_NOCLIP, fontcolor.DirectX());			
 		}
 		else {
 			auto p = parent->GetPos();
-			SetRect(&r, pos.x + p.start.x, pos.y + p.start.y, content.length() * 4 + p.end.x, 5 + p.end.y);
-			font.self->DrawText(NULL, content.c_str(), -1, &r, DT_LEFT | DT_NOCLIP, fontcolor.DirectX());
+			float midx = (p.end.x - p.start.x)/2 + p.start.x;
+			float midy = (p.end.y - p.start.y)/2 + p.start.y;
+			switch (alignment) {
+			case ALIGN_CENTER:
+				SetRect(&r, midx - content.length() * 4 + 5, midy - 10, content.length() * 4 + midx, 5 + midy);
+				font.self->DrawText(NULL, content.c_str(), -1, &r, DT_LEFT | DT_NOCLIP, fontcolor.DirectX());
+				break;
+			default:
+				break;
+		}
 		}
 	}
 	bool Text::Valid() {

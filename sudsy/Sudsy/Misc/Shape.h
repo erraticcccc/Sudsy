@@ -213,6 +213,9 @@ namespace Shapes {
 			Vec2 rvec = Vec2(radius);
 			return ScreenPos(center - rvec, center + rvec);
 		}
+		void SetPos() {
+
+		}
 		void SetVisible(bool vis) {
 			visible = vis;
 		}

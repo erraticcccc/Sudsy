@@ -19,15 +19,18 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Sudsy\ButtonList\ButtonList.cpp" />
     <ClCompile Include="Sudsy\Button\button.cpp" />
     <ClCompile Include="Sudsy\Checkbox\checkbox.cpp" />
     <ClCompile Include="Sudsy\Hook\Hook.cpp" />
     <ClCompile Include="Sudsy\Image\Image.cpp" />
+    <ClCompile Include="Sudsy\Slider\Slider.cpp" />
     <ClCompile Include="Sudsy\Sudsy.cpp" />
     <ClCompile Include="Sudsy\Text\text.cpp" />
     <ClCompile Include="Sudsy\Window\window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Sudsy\ButtonList\ButtonList.h" />
     <ClInclude Include="Sudsy\Button\button.h" />
     <ClInclude Include="Sudsy\Checkbox\checkbox.h" />
     <ClInclude Include="Sudsy\common.h" />
@@ -37,6 +40,7 @@
     <ClInclude Include="Sudsy\Misc\Shape.h" />
     <ClInclude Include="Sudsy\Misc\Storage.h" />
     <ClInclude Include="Sudsy\Misc\Sudject.h" />
+    <ClInclude Include="Sudsy\Slider\Slider.h" />
     <ClInclude Include="Sudsy\Sudsy.h" />
     <ClInclude Include="Sudsy\Text\text.h" />
     <ClInclude Include="Sudsy\Window\window.h" />

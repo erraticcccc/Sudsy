@@ -1,15 +1,21 @@
 #pragma once
-#include "Checkbox/checkbox.h"
+#include "ButtonList/ButtonList.h"
+
+struct WindowProperties {
+	bool HideButtons;
+	bool Movable;
+	bool Sizable;
+
+};
 
 namespace sudsy
 {
-	class Window
+	class Window : public Sudject
 	{
 	public:
 		Window();
-		Window(std::string t);
-		Window(std::string t, int w, int h);
-		Window(std::string t, int w, int h, int posx, int posy);
+		Window(sudsy::Text t);
+		Window(sudsy::Text t, Shape* shape);
 		~Window();
 	public:
 		void Create();
@@ -18,32 +24,15 @@ namespace sudsy
 		void SetSize(int width, int height);
 		void SetPosition(int x, int y);
 		void SetVisible(bool visible);
-		void SetMinimized(bool minimized);
-		void SetMaximized(bool maximized);
-		void SetBorderless(bool borderless);
-		void SetMovable(bool movable);
-		void SetSizable(bool sizable);
-		void SetMinSize(int width, int height);
-		void SetMaxSize(int width, int height);
-		void SetAlpha(int alpha);
-		void SetColor(int x, int y, int z);
 		void SetColor(Color col);
 		void SetText(Text txt);
-		bool IsMouseInWindow();
 		void Draw();
+		ScreenPos GetPos() {
+			if (children.empty()) { return pd::SPZERO; }
+			return GetChild(0)->GetPos();
+		}
 	private:
 		sudsy::Text title;
-		int w, h, x, y;
 		bool visible;
-		bool minimized;
-		bool maximized;
-		bool borderless;
-		bool movable;
-		bool sizable;
-		int minwidth;
-		int minheight;
-		int maxwidth;
-		int maxheight;
-		Color color;
 	};
 }

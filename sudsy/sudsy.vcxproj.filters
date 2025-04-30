@@ -37,6 +37,12 @@
     <Filter Include="Classes\Storage Classes">
       <UniqueIdentifier>{de9c7560-7b1a-42ca-a585-63b06c838baa}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Classes\Slider">
+      <UniqueIdentifier>{ec0e1a63-190d-44a6-915f-e1d28eb71927}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Classes\ButtonList">
+      <UniqueIdentifier>{f7e7759a-5a48-4ad6-83c9-47ea7d098aa1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Sudsy\Sudsy.cpp">
@@ -59,6 +65,12 @@
     </ClCompile>
     <ClCompile Include="Sudsy\Image\Image.cpp">
       <Filter>Classes\Image</Filter>
+    </ClCompile>
+    <ClCompile Include="Sudsy\ButtonList\ButtonList.cpp">
+      <Filter>Classes\ButtonList</Filter>
+    </ClCompile>
+    <ClCompile Include="Sudsy\Slider\Slider.cpp">
+      <Filter>Classes\Slider</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -97,6 +109,12 @@
     </ClInclude>
     <ClInclude Include="Sudsy\Misc\Shape.h">
       <Filter>Classes\Shape</Filter>
+    </ClInclude>
+    <ClInclude Include="Sudsy\ButtonList\ButtonList.h">
+      <Filter>Classes\ButtonList</Filter>
+    </ClInclude>
+    <ClInclude Include="Sudsy\Slider\Slider.h">
+      <Filter>Classes\Slider</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

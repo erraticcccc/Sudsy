@@ -11,7 +11,7 @@ struct Font {
 	{}
 	void Create() {
 		if (!Sudevice) { return; }
-		//				device   h		 w		weight       mip italic  charset         precision           quality				 pitch and		 family    fontName   fontobj
+		//			   device    h		 w		weight       mip italic  charset         precision           quality				 pitch and		 family    fontName   fontobj
 		D3DXCreateFont(Sudevice, height, width, weight * 200, 1, FALSE, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, ANTIALIASED_QUALITY, DEFAULT_PITCH | FF_DONTCARE, name.c_str(), &self);
 	}
 	~Font() {
@@ -25,12 +25,13 @@ struct Font {
 	}
 };
 
-enum alignment {
+enum Alignment {
 	ALIGN_NONE = 0,
 	ALIGN_RIGHT,
 	ALIGN_LEFT,
 	ALIGN_TOP,
-	ALIGN_BOTTOM
+	ALIGN_BOTTOM,
+	ALIGN_CENTER
 };
 
 namespace sudsy
@@ -44,6 +45,7 @@ namespace sudsy
 		bool shadow = false, rightaligned = false, outline = false, centered = false;
 		Color shadowcolor = pd::COLOR_BLACK, outlinecolor = pd::COLOR_BLACK;
 		Type type = S_TEXT;
+		Alignment alignment = ALIGN_CENTER;
 	public:
 		Font font;
 		Text();

@@ -49,6 +49,12 @@ public:
 		children.erase(children.begin() + index);
 		return ch;
 	}
+	void RemoveChildren() {
+		for (auto& ch : children) {
+			ch->parent = nullptr;
+		}
+		children.clear();
+	}
 	virtual Type GetType() = 0;
 	bool IsVisible() { return visible; }
 	virtual void Draw() = 0;

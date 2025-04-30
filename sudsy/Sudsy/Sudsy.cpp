@@ -5,11 +5,8 @@ EndScene oEndScene;
 
 HRESULT __stdcall RenderScene(IDirect3DDevice9* pDevice);
 
-void sudsy::ProcessButtons();
-
 WNDPROC oWndProc = NULL;
 LRESULT CALLBACK wndProc(HWND h, UINT code, WPARAM wparam, LPARAM lparam) {
-	
 	switch (code) {
 	default:
 		sudsy::MClick = sudsy::none;
@@ -18,7 +15,15 @@ LRESULT CALLBACK wndProc(HWND h, UINT code, WPARAM wparam, LPARAM lparam) {
 		sudsy::MClick = sudsy::lb;
 		sudsy::ProcessButtons();
 		break;
+	case WM_LBUTTONDBLCLK:
+		sudsy::MClick = sudsy::lb;
+		sudsy::ProcessButtons();
+		break;
 	case WM_RBUTTONDOWN:
+		sudsy::MClick = sudsy::rb;
+		sudsy::ProcessButtons();
+		break;
+	case WM_RBUTTONDBLCLK:
 		sudsy::MClick = sudsy::rb;
 		sudsy::ProcessButtons();
 		break;
@@ -26,6 +31,10 @@ LRESULT CALLBACK wndProc(HWND h, UINT code, WPARAM wparam, LPARAM lparam) {
 		sudsy::MClick = sudsy::mb;
 		sudsy::ProcessButtons();
 		break;
+	}
+
+	if (code == WM_KEYDOWN) {
+		sudsy::ProcessHotkey(wparam);
 	}
 
 	return CallWindowProc(oWndProc,h,code,wparam,lparam);
@@ -175,11 +184,25 @@ void sudsy::ProcessButtons() {
 	if (sudjects.empty()) { return; } // Somethings wrong || there is no buttons anyway
 	for (Sudject *& sud : sudjects) {
 		if (!sud->Valid()) { continue; }
+		if (!sud->IsVisible()) { continue; }
 		if (sud->GetType() != S_BUTTON) { continue; }
 		ScreenPos p = sud->GetPos();
 		if (!sudsy::MousePos.Bounds(p.start, p.end)) { continue; }
 		Button* button = (Button*)sud;
 		button->Click(sudsy::MClick);
+	}
+}
+
+inline std::map <int, std::function<void()>> CatchKeys;
+
+void sudsy::AddHotkey(int key, std::function <void()> func) {
+	CatchKeys[key] = std::move(func);
+}
+
+void sudsy::ProcessHotkey(int key) {
+	auto f = CatchKeys.find(key);
+	if (f != CatchKeys.end()) {
+		f->second();
 	}
 }
 

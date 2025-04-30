@@ -82,13 +82,9 @@ struct Color {
 
 	Color() : r(255), g(255), b(255), a(255) {}
 
-	Color(int _r, int _g, int _b, int _a = 255) {
-		Set(_r, _g, _b, _a);
-	}
+	Color(int x, int y, int z, int m = 255) : r(x), g(y), b(z), a(m) {}
 
-	Color(int z) {
-		Set(z, z, z, z);
-	}
+	Color(int z) : r(z), g(z), b(z), a(z) {}
 
 	void Set(int _r, int _g, int _b, int _a = 255) {
 		r = _r; g = _g; b = _b; a = _a;
@@ -126,10 +122,7 @@ struct Color {
 		return *this;
 	}
 	Color operator+(Color other) {
-		Color n(r + ((r + other.r) / 2), 
-				g + ((g + other.g) / 2), 
-				b + ((b + other.b) / 2), 
-				a + ((a + other.a) / 2));
+		Color n(r + other.r, g + other.g, b + other.b, a + other.a);
 		n.Clamp();
 		return n;
 	}
@@ -231,6 +224,10 @@ struct Vec2
 		return HYPOTENUSE(fabs(other.x - this->x), fabs(other.y - this->y));
 	}
 
+	Vec2 diff(Vec2 other) {
+		return Vec2(other.x - x, other.y - y);
+	}
+
 	void clamp(float maxx, float minx, float maxy, float miny) {
 		x = _fclmp(x, maxx, minx);
 		y = _fclmp(y, maxy, miny);
@@ -266,6 +263,10 @@ struct ScreenPos {
 	ScreenPos() : start(pd::VEC2ZERO), end(pd::VEC2ZERO) {}
 	ScreenPos(Vec2 s, Vec2 e) : start(s), end(e) {}
 };
+
+namespace pd {
+	inline ScreenPos SPZERO = ScreenPos(VEC2ZERO, VEC2ZERO);
+}
 
 struct _VTX {
 	float x, y, z, rhw;
