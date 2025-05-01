@@ -28,15 +28,32 @@ Heres an example:
 
 void MainThread() {
 
-	Color blue(0, 0, 255, 255);
-	Vec2  pos(300, 300);
+	Vec2  offset(300, 300);
 
-	sudsy::Text example("example",13,blue);
-	example.SetPos(pos);
+	sudsy::Button button("flip");
+	Shapes::Rectangle box(offset, offset + offset/4, Color(0, 255, 120, 170));
+	
+	button.SetShape(box);
+	
+	sudsy::AddHotkey(VK_INSERT, [&]() {
+			button.SetVisible(!button.IsVisible());
+		});
+
+	int switcher = 0;
+	button = ([&](sudsy::clicks c) {
+			if (c == sudsy::lb) {
+				Color col = button.GetColor();
+				col.Set(col.r + switcher, col.g - switcher, col.b + (switcher * 2));
+				button.SetTextColor(255 - (col.r % 255), 255 - (col.g % 255), 255 - (col.b % 255));
+				button.SetColor(col);
+			}
+		});
 
 	sudsy::Init();
 
 	while (true) {
+		switcher++;
+		switcher %= 500;
 		Sleep(10);
 	}
 
@@ -61,8 +78,9 @@ BOOL APIENTRY DllMain(HMODULE hModule,
 
 ```
 
-This example will compile, and upon injecting into any DirectX9 application, will draw a line, a black line with a white outline, from the around the top left quarter to near the middle.
+This example will create a small button, that changes color randomly upon clicking. The button can be hidden or shown using the 'Insert' key. 
 
 What I need to do next:
 - Finish class definitions
-- Implement proper WndProc hooking, or look into alternative method of capture mouse click/mouse pos.
+- Get more ideas for things
+- Implement dragging for movable windows and sliders

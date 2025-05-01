@@ -25,15 +25,6 @@ struct Font {
 	}
 };
 
-enum Alignment {
-	ALIGN_NONE = 0,
-	ALIGN_RIGHT,
-	ALIGN_LEFT,
-	ALIGN_TOP,
-	ALIGN_BOTTOM,
-	ALIGN_CENTER
-};
-
 namespace sudsy
 {
 	class Text : public Sudject
@@ -59,6 +50,11 @@ namespace sudsy
 		~Text();
 		void SetPos(Vec2 p) { pos = p; }
 		ScreenPos GetPos();
+		void SetColor(const Color& color) { fontcolor = color; };
+		void SetColor(int r, int g, int b, int a) { fontcolor.Set(r, g, b, a); };
+		void SetAlignment(Alignment a) { alignment = a; }
+		void SetPos(ScreenPos& scr) { pos = scr.end; }
+		void Move(Vec2 dir) { pos += dir; }
 		void Draw();
 		bool Valid();
 		void SetVisible(bool v) {

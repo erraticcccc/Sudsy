@@ -33,9 +33,10 @@ namespace sudsy
 	inline HWND WHandle = NULL;
 	inline clicks MClick = none;
 	inline int test = 0;
+	inline bool MouseDown = false;
 	void UpdateMousePos();
 	void UpdateWindowPos();
-	void ProcessButtons();
+	Button* ProcessButtons();
 	void ProcessHotkey(int key);
 	void AddHotkey(int key, std::function <void()> func);
 	void Init();

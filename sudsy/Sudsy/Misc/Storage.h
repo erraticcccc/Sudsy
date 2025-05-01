@@ -205,7 +205,8 @@ struct Vec2
 		return Vec2(x - other.x, y - other.y);
 	}
 	void operator+=(Vec2 other) {
-		this->Set(other.x + this->x, other.y + this->y);
+		x += other.x;
+		y += other.y;
 	}
 	bool operator==(Vec2 other) {
 		return (x == other.x && y == other.y);

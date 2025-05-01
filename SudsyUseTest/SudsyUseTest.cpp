@@ -10,49 +10,37 @@
 
 #endif
 
-int thing = 0;
-
-void testClick(sudsy::clicks c) {
-	if (c == sudsy::lb) {
-		thing++;
-	}
-	if (c == sudsy::rb) {
-		thing--;
-	}
-}
-
 void MainThread() {
 
-	Color blue(0, 0, 255, 40);
-	Color green(0, 255, 120, 170);
-	Vec2  pos(5, 5);
 	Vec2  offset(300, 300);
 
-	sudsy::Button button("flip");
-	Shapes::Rectangle box(offset, offset + offset/4, green);
+	Shapes::Rectangle box(offset, offset + offset/4, Color(0, 255, 120, 170));
 	
-	sudsy::AddHotkey(VK_INSERT, [&]() {
-		if (button.IsVisible()) {
-			button.SetVisible(false);
-		}
-		else {
-			button.SetVisible(true);
-		}
-		});
-
-	button.SetShape(box);
+	sudsy::Button button("flip",box);
+	button.SetMoveable(true);
 
 	int switcher = 0;
-	bool show = true;
-	button = ([&](sudsy::clicks c) {
+	button.SetClickFunction([&](sudsy::clicks c) {
 			if (c == sudsy::lb) {
-				// nothing :)
+				Color col = button.GetColor();
+				col.Set(col.r + switcher, col.g - switcher, col.b + (switcher * 2));
+				button.SetTextColor(255 - (col.r % 255), 255 - (col.g % 255), 255 - (col.b % 255));
+				button.SetColor(col);
 			}
+			if (c == sudsy::rb) {
+				button.SetMoveable(!button.IsMoveable());
+			}
+		});
+
+	sudsy::AddHotkey(VK_INSERT, [&]() {
+			button.SetVisible(!button.IsVisible());
 		});
 
 	sudsy::Init();
 
 	while (true) {
+		switcher++;
+		switcher %= 500;
 		Sleep(10);
 	}
 

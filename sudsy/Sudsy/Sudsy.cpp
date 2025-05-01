@@ -8,29 +8,56 @@ HRESULT __stdcall RenderScene(IDirect3DDevice9* pDevice);
 WNDPROC oWndProc = NULL;
 LRESULT CALLBACK wndProc(HWND h, UINT code, WPARAM wparam, LPARAM lparam) {
 	switch (code) {
-	default:
+	default: {
 		sudsy::MClick = sudsy::none;
 		break;
-	case WM_LBUTTONDOWN:
+	}
+	case WM_LBUTTONDOWN: {
+		sudsy::MousePos = { (float)GET_X_LPARAM(lparam), (float)GET_Y_LPARAM(lparam) };
+		if (sudsy::MouseDown) { break; }
+		sudsy::MouseDown = true;
+		sudsy::MClick = sudsy::lb;
+		sudsy::Button* b = sudsy::ProcessButtons();
+		if (b) { b->Click(sudsy::MClick); }
+		break;
+	}
+	case WM_LBUTTONUP: {
+		sudsy::MouseDown = false;
+		break;
+	}
+	case WM_MOUSEMOVE: {
+		if (sudsy::MouseDown) {
+			sudsy::MClick = sudsy::lb;
+			sudsy::Button* b = sudsy::ProcessButtons();
+			if (!b) { break; }
+			if (!b->IsMoveable()) { break; }
+			Vec2 going = { (float)GET_X_LPARAM(lparam), (float)GET_Y_LPARAM(lparam) };
+			Vec2 change = { going.x - sudsy::MousePos.x, going.y - sudsy::MousePos.y };
+			b->Move(change);
+			sudsy::MousePos = going;
+		}
+		break;
+	}
+	case WM_LBUTTONDBLCLK: {
 		sudsy::MClick = sudsy::lb;
 		sudsy::ProcessButtons();
 		break;
-	case WM_LBUTTONDBLCLK:
-		sudsy::MClick = sudsy::lb;
-		sudsy::ProcessButtons();
-		break;
-	case WM_RBUTTONDOWN:
+	}
+	case WM_RBUTTONDOWN: {
 		sudsy::MClick = sudsy::rb;
 		sudsy::ProcessButtons();
 		break;
-	case WM_RBUTTONDBLCLK:
+	}
+	case WM_RBUTTONDBLCLK: {
 		sudsy::MClick = sudsy::rb;
 		sudsy::ProcessButtons();
 		break;
-	case WM_MBUTTONDOWN:
+	}
+	case WM_MBUTTONDOWN: {
 		sudsy::MClick = sudsy::mb;
 		sudsy::ProcessButtons();
 		break;
+	}
 	}
 
 	if (code == WM_KEYDOWN) {
@@ -166,31 +193,22 @@ void sudsy::Destroy() {
 	sudsy::hook.ToggleHook();
 }
 
-POINT faggot;
-void sudsy::UpdateMousePos() {
-	// Obtain mousepos relative to window
-	if (!sudsy::WHandle) { return; }
-	GetCursorPos(&faggot);
-	ScreenToClient(sudsy::WHandle, &faggot);
-	sudsy::MousePos.Set(faggot.x, faggot.y);
-}
-
 void sudsy::UpdateWindowPos() {
 	if (!sudsy::WHandle) { return; }
 	GetWindowRect(sudsy::WHandle, &sudsy::WPos);
 }
 
-void sudsy::ProcessButtons() {
-	if (sudjects.empty()) { return; } // Somethings wrong || there is no buttons anyway
+sudsy::Button* sudsy::ProcessButtons() {
+	if (sudjects.empty()) { return nullptr; } // Somethings wrong || there is no buttons anyway
 	for (Sudject *& sud : sudjects) {
 		if (!sud->Valid()) { continue; }
 		if (!sud->IsVisible()) { continue; }
 		if (sud->GetType() != S_BUTTON) { continue; }
 		ScreenPos p = sud->GetPos();
 		if (!sudsy::MousePos.Bounds(p.start, p.end)) { continue; }
-		Button* button = (Button*)sud;
-		button->Click(sudsy::MClick);
+		return (Button*)sud;
 	}
+	return nullptr;
 }
 
 inline std::map <int, std::function<void()>> CatchKeys;
@@ -209,7 +227,7 @@ void sudsy::ProcessHotkey(int key) {
 HRESULT __stdcall RenderScene(IDirect3DDevice9* pDevice) {
 	Sudevice = pDevice;
 
-	sudsy::UpdateMousePos();
+	//sudsy::UpdateMousePos();
 	sudsy::UpdateWindowPos();
 
 	sudsy::Render();

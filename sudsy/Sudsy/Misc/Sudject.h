@@ -19,6 +19,7 @@ protected:
 	Sudject* parent;
 	std::vector <Sudject*> children;
 	Sudject *self = this;
+	bool moveable = false;
 public:
 	Sudject() {
 		parent = nullptr;
@@ -60,5 +61,9 @@ public:
 	virtual void Draw() = 0;
 	virtual bool Valid() = 0;
 	virtual ScreenPos GetPos() = 0;
+	virtual void SetPos(ScreenPos& p) = 0;
+	virtual void Move(Vec2 dir) = 0;
 	virtual void SetVisible(bool vis) = 0;
+	virtual bool IsMoveable() { return moveable; }
+	virtual void SetMoveable(bool p) { moveable = p; }
 };
