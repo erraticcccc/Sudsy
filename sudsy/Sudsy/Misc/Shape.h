@@ -22,6 +22,12 @@ struct Shape : public Sudject {
 	virtual float Area() = 0;
 };
 
+namespace sudsy {
+	inline float avg = 0;
+}
+
+static int count = 0;
+static float total = 0;
 namespace Shapes {
 	struct Line : public Shape {
 		Vec2 start, end;
@@ -100,6 +106,7 @@ namespace Shapes {
 			start += dir;
 			end += dir;
 		}
+		void Rescale(ScreenPos & ratio) {};
 	};
 	struct Rectangle : public Shape {
 		Vec2 tl, tr, bl, br; // Top left, top right, bottom left, bottom right
@@ -108,6 +115,7 @@ namespace Shapes {
 		Alignment alignment = ALIGN_LEFT;
 		int outlineoffset = 0;
 		bool filled = true, outline = false;
+		D3DXVECTOR2 line[2];
 		Rectangle() : tl(pd::VEC2ZERO), tr(pd::VEC2ZERO), bl(pd::VEC2ZERO), br(pd::VEC2ZERO) {}
 		Rectangle(Vec2 topleft, Vec2 bottomright) : tl(topleft), br(bottomright), bl(topleft.x, bottomright.y), tr(bottomright.x, topleft.y) {}
 		Rectangle(Vec2 topleft, Vec2 bottomright, Color col) : color(col), tl(topleft), br(bottomright), bl(topleft.x, bottomright.y), tr(bottomright.x, topleft.y) {}
@@ -143,50 +151,62 @@ namespace Shapes {
 		void SetVisible(bool v) {
 			visible = v;
 		}
+		void Rescale(ScreenPos &ratio) {
+			tl *= ratio.start.x;
+			bl *= ratio.end.x;
+			tr *= ratio.start.y;
+			br *= ratio.end.y;
+		}
 		inline void Draw() {
 			if (!Valid()) { return; }
 			if (!Sudevice) { return; }
 
 			static ID3DXLine* pLine = nullptr;
 
+			auto start = std::chrono::high_resolution_clock::now();
+
 			if (!pLine)
 				D3DXCreateLine(Sudevice, &pLine);
+
+			float width = bl.y - tl.y;
+			float midy = tl.y + width * 0.5;
 
 			if (parent && parent->GetType() == S_SHAPE) {
 				ScreenPos pp = parent->GetPos();
 				switch (alignment) {
-				case ALIGN_LEFT:
-					for (float i = (tl.y + pp.start.y); i < (pp.start.y + bl.y); ++i) {
-						D3DXVECTOR2 line[] = {
-							D3DXVECTOR2(tl.x + pp.start.x, i),
-							D3DXVECTOR2(tr.x + pp.start.x, i)
-						};
-						pLine->Draw(line, 2, color.DirectX());
-					}
+				case ALIGN_LEFT: {
+					line[0] = D3DXVECTOR2(tl.x + pp.start.x, midy);
+					line[1] = D3DXVECTOR2(tr.x + pp.start.x, midy);
+					pLine->SetWidth(width);
+					pLine->Draw(line, 2, color.DirectX());
 					break;
+				}
 				case ALIGN_CENTER:
 
 					break;
-				default: // = ALIGN_LEFT
-					for (float i = (tl.y + pp.start.y); i < (pp.start.y + bl.y); ++i) {
-						D3DXVECTOR2 line[] = {
-							D3DXVECTOR2(tl.x + pp.start.x, i),
-							D3DXVECTOR2(tr.x + pp.start.x, i)
-						};
-						pLine->Draw(line, 2, color.DirectX());
-					}
+				default: { // = ALIGN_LEFT
+					line[0] = D3DXVECTOR2(tl.x + pp.start.x, midy);
+					line[1] = D3DXVECTOR2(tr.x + pp.start.x, midy);
+					pLine->SetWidth(width);
+					pLine->Draw(line, 2, color.DirectX());
 					break;
+				}
 				}
 			}
 			else {
-				for (float i = tr.y; i < br.y; ++i) {
-					D3DXVECTOR2 line[] = {
-						D3DXVECTOR2(tl.x, i),
-						D3DXVECTOR2(tr.x, i)
-					};
-					pLine->Draw(line, 2, color.DirectX());
-				}
+				line[0] = D3DXVECTOR2(tl.x, midy);
+				line[1] = D3DXVECTOR2(tr.x, midy);
+				pLine->SetWidth(width);
+				pLine->Draw(line, 2, color.DirectX());
 			}
+			auto end = std::chrono::high_resolution_clock::now();
+
+			std::chrono::duration<float, std::micro> t = end - start;
+
+			if (count > 100) { count = 0; total = 0; }
+			count++;
+			total += t.count();
+			sudsy::avg = total / count;
 		}
 	};
 	struct Circle : public Shape {

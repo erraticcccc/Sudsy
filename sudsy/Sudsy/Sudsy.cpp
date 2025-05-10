@@ -5,59 +5,70 @@ EndScene oEndScene;
 
 HRESULT __stdcall RenderScene(IDirect3DDevice9* pDevice);
 
+inline sudsy::clicks click = sudsy::none;
+
+ScreenPos original;
 WNDPROC oWndProc = NULL;
 LRESULT CALLBACK wndProc(HWND h, UINT code, WPARAM wparam, LPARAM lparam) {
 	switch (code) {
-	default: {
-		sudsy::MClick = sudsy::none;
-		break;
-	}
-	case WM_LBUTTONDOWN: {
-		sudsy::MousePos = { (float)GET_X_LPARAM(lparam), (float)GET_Y_LPARAM(lparam) };
-		if (sudsy::MouseDown) { break; }
-		sudsy::MouseDown = true;
-		sudsy::MClick = sudsy::lb;
-		sudsy::Button* b = sudsy::ProcessButtons();
-		if (b) { b->Click(sudsy::MClick); }
-		break;
-	}
-	case WM_LBUTTONUP: {
-		sudsy::MouseDown = false;
-		break;
-	}
-	case WM_MOUSEMOVE: {
-		if (sudsy::MouseDown) {
-			sudsy::MClick = sudsy::lb;
+		case WM_LBUTTONDOWN: {
+			sudsy::MousePos = { (float)GET_X_LPARAM(lparam), (float)GET_Y_LPARAM(lparam) };
+			if (sudsy::MouseDown) { break; }
+			sudsy::MouseDown = true;
+			click = sudsy::lb;
 			sudsy::Button* b = sudsy::ProcessButtons();
-			if (!b) { break; }
-			if (!b->IsMoveable()) { break; }
-			Vec2 going = { (float)GET_X_LPARAM(lparam), (float)GET_Y_LPARAM(lparam) };
-			Vec2 change = { going.x - sudsy::MousePos.x, going.y - sudsy::MousePos.y };
-			b->Move(change);
-			sudsy::MousePos = going;
+			if (b) { b->Click(click); }
+			break;
 		}
-		break;
-	}
-	case WM_LBUTTONDBLCLK: {
-		sudsy::MClick = sudsy::lb;
-		sudsy::ProcessButtons();
-		break;
-	}
-	case WM_RBUTTONDOWN: {
-		sudsy::MClick = sudsy::rb;
-		sudsy::ProcessButtons();
-		break;
-	}
-	case WM_RBUTTONDBLCLK: {
-		sudsy::MClick = sudsy::rb;
-		sudsy::ProcessButtons();
-		break;
-	}
-	case WM_MBUTTONDOWN: {
-		sudsy::MClick = sudsy::mb;
-		sudsy::ProcessButtons();
-		break;
-	}
+		case WM_LBUTTONUP: {
+			sudsy::MouseDown = false;
+			break;
+		}
+		case WM_MOVE: {
+			break;
+		}
+		case WM_MOUSEMOVE: {
+			if (sudsy::MouseDown) {
+				click = sudsy::lb;
+				sudsy::Button* b = sudsy::ProcessButtons();
+				if (!b) { break; }
+				if (!b->IsMoveable()) { break; }
+				Vec2 going = { (float)GET_X_LPARAM(lparam), (float)GET_Y_LPARAM(lparam) };
+				Vec2 change = { going.x - sudsy::MousePos.x, going.y - sudsy::MousePos.y };
+				b->Move(change);
+				sudsy::MousePos = going;
+			}
+			break;
+		}
+		case WM_RBUTTONDOWN: {
+			click = sudsy::rb;
+			sudsy::Button* b = sudsy::ProcessButtons();
+			if (b) { b->Click(click); }
+			break;
+		}
+		case WM_MBUTTONDOWN: {
+			click = sudsy::mb;
+			sudsy::Button* b = sudsy::ProcessButtons();
+			if (b) { b->Click(click); }
+			break;
+		}
+		case WM_SIZE: {
+			/*ScreenPos n = sudsy::UpdateWindowPos();
+			n.start = n.left / original.left;
+			n.end = { n.bottom / original.bottom,  };
+			for (auto& shape : sudjects) {
+				if (!shape->Valid()) { continue; }
+				if (shape->GetType() != S_SHAPE) { continue; }
+				Shape* sh = (Shape*)shape;
+				sh->Rescale(n);
+			}*/
+			break;
+		}
+		default: {
+			if (original.end.x == -500000) { original = sudsy::UpdateWindowPos(); }
+			click = sudsy::none;
+			break;
+		}
 	}
 
 	if (code == WM_KEYDOWN) {
@@ -193,9 +204,14 @@ void sudsy::Destroy() {
 	sudsy::hook.ToggleHook();
 }
 
-void sudsy::UpdateWindowPos() {
-	if (!sudsy::WHandle) { return; }
-	GetWindowRect(sudsy::WHandle, &sudsy::WPos);
+ScreenPos sudsy::UpdateWindowPos() {
+	RECT r;
+	if (!sudsy::WHandle) { return { pd::VEC2ZERO, pd::VEC2ZERO }; }
+	GetWindowRect(sudsy::WHandle, &r);
+	ScreenPos p;
+	p.start = { (float)r.left, (float)r.right };
+	p.end = { (float)r.top, (float)r.bottom };
+	return p;
 }
 
 sudsy::Button* sudsy::ProcessButtons() {
@@ -224,11 +240,12 @@ void sudsy::ProcessHotkey(int key) {
 	}
 }
 
+
 HRESULT __stdcall RenderScene(IDirect3DDevice9* pDevice) {
+
 	Sudevice = pDevice;
 
-	//sudsy::UpdateMousePos();
-	sudsy::UpdateWindowPos();
+	if (!sudsy::WPos.left) { sudsy::UpdateWindowPos(); }
 
 	sudsy::Render();
 

@@ -220,6 +220,10 @@ struct Vec2
 
 		return *this;
 	}
+	void operator*=(float v) {
+		x *= v;
+		y *= v;
+	}
 
 	float distance(Vec2 other) {
 		return HYPOTENUSE(fabs(other.x - this->x), fabs(other.y - this->y));
@@ -251,12 +255,18 @@ struct Vec2
 	}
 };
 
+struct _VTX {
+	float x, y, z, rhw;
+	D3DCOLOR color;
+};
+
 namespace pd {
 	inline Color COLOR_WHITE = Color(255, 255, 255, 255);
 	inline Color COLOR_BLACK = Color(0, 0, 0, 255);
 	inline Color COLOR_NONE = Color(0, 0, 0, 0);
 	inline Vec2 VEC2ZERO = Vec2(0, 0);
 	inline Vec3 VEC3ZERO = Vec3(0, 0, 0);
+	inline _VTX VTXZERO = { 0.0, 0.0, 0.0, 0.0, COLOR_WHITE.DirectX() };
 }
 
 struct ScreenPos {
@@ -268,8 +278,3 @@ struct ScreenPos {
 namespace pd {
 	inline ScreenPos SPZERO = ScreenPos(VEC2ZERO, VEC2ZERO);
 }
-
-struct _VTX {
-	float x, y, z, rhw;
-	D3DCOLOR color;
-};

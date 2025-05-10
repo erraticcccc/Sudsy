@@ -57,8 +57,12 @@ namespace sudsy
 		void Move(Vec2 dir) { pos += dir; }
 		void Draw();
 		bool Valid();
+		void Rescale(RECT& ratios) {};
 		void SetVisible(bool v) {
 			visible = v;
+		}
+		void Rescale(ScreenPos& r) {
+			// unlikely to do anything!
 		}
 	public:
 		void operator=(std::string str)		{ content = str; }

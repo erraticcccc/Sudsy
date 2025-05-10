@@ -33,6 +33,9 @@ namespace sudsy {
 		void SetTextColor(const Color& color) { text.SetColor(color); }
 		void SetTextColor(int r, int g, int b, int a = 255) { text.SetColor(r,g,b,a); }
 		void SetTextAlignment(Alignment a) { text.SetAlignment(a); }
+		void Rescale(ScreenPos& ratios) {
+			GetShape()->Rescale(ratios);
+		}
 	public:
 		void operator=(std::string t) {
 			text = t;

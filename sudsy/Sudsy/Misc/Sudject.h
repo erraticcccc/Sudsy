@@ -66,4 +66,5 @@ public:
 	virtual void SetVisible(bool vis) = 0;
 	virtual bool IsMoveable() { return moveable; }
 	virtual void SetMoveable(bool p) { moveable = p; }
+	virtual void Rescale(ScreenPos& ratios) = 0;
 };

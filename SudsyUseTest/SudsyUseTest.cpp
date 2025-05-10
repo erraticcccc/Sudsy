@@ -12,35 +12,33 @@
 
 void MainThread() {
 
-	Vec2  offset(300, 300);
+	Vec2 offset(300, 300);
+	Vec2 offset2(1300, 500);
+	Vec2 offset3(600, 200);
+	Vec2 offset4(400, 800);
+	Vec2 offset5(800, 1300);
+	Vec2 offset6(1200, 1400);
+	Vec2 offset7(900, 1300);
+	Vec2 offset8(400, 1200);
+	Vec2 ten(100, 100);
+	Vec2 corner(0);
 
-	Shapes::Rectangle box(offset, offset + offset/4, Color(0, 255, 120, 170));
-	
-	sudsy::Button button("flip",box);
-	button.SetMoveable(true);
+	Color red(255, 0, 0, 255);
 
-	int switcher = 0;
-	button.SetClickFunction([&](sudsy::clicks c) {
-			if (c == sudsy::lb) {
-				Color col = button.GetColor();
-				col.Set(col.r + switcher, col.g - switcher, col.b + (switcher * 2));
-				button.SetTextColor(255 - (col.r % 255), 255 - (col.g % 255), 255 - (col.b % 255));
-				button.SetColor(col);
-			}
-			if (c == sudsy::rb) {
-				button.SetMoveable(!button.IsMoveable());
-			}
-		});
-
-	sudsy::AddHotkey(VK_INSERT, [&]() {
-			button.SetVisible(!button.IsVisible());
-		});
+	Shapes::Rectangle box1(offset, offset + ten, red);
+	Shapes::Rectangle box2(offset2, offset2 + ten, red);
+	Shapes::Rectangle box3(offset3, offset3 + ten, red);
+	Shapes::Rectangle box4(offset4, offset4 + ten, red);
+	Shapes::Rectangle box5(offset5, offset5 + ten, red);
+	Shapes::Rectangle box6(offset6, offset6 + ten, red);
+	Shapes::Rectangle box7(offset7, offset7 + ten, red);
+	Shapes::Rectangle box8(offset8, offset8 + ten, red);
+	sudsy::Text debuginfo("", corner, red);
 
 	sudsy::Init();
 
 	while (true) {
-		switcher++;
-		switcher %= 500;
+		debuginfo = ("Average Time: " + std::to_string(sudsy::avg));
 		Sleep(10);
 	}
 

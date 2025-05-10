@@ -8,6 +8,7 @@
 #include <functional>
 #include <map>
 #include <windowsx.h>
+#include <chrono>
 
 #include <d3d9.h>
 #pragma comment(lib, "d3d9.lib")

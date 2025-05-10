@@ -31,11 +31,9 @@ namespace sudsy
 	inline Vec2 MousePos = { 0,0 };
 	inline RECT WPos = { 0,0,0,0 };
 	inline HWND WHandle = NULL;
-	inline clicks MClick = none;
 	inline int test = 0;
 	inline bool MouseDown = false;
-	void UpdateMousePos();
-	void UpdateWindowPos();
+	ScreenPos UpdateWindowPos();
 	Button* ProcessButtons();
 	void ProcessHotkey(int key);
 	void AddHotkey(int key, std::function <void()> func);
