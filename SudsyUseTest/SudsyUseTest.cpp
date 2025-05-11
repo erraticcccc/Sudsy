@@ -12,33 +12,30 @@
 
 void MainThread() {
 
-	Vec2 offset(300, 300);
-	Vec2 offset2(1300, 500);
-	Vec2 offset3(600, 200);
-	Vec2 offset4(400, 800);
-	Vec2 offset5(800, 1300);
-	Vec2 offset6(1200, 1400);
-	Vec2 offset7(900, 1300);
-	Vec2 offset8(400, 1200);
 	Vec2 ten(100, 100);
 	Vec2 corner(0);
 
 	Color red(255, 0, 0, 255);
+	Color green(0, 255, 0, 255);
+	Color blue(0, 0, 255, 255);
 
-	Shapes::Rectangle box1(offset, offset + ten, red);
-	Shapes::Rectangle box2(offset2, offset2 + ten, red);
-	Shapes::Rectangle box3(offset3, offset3 + ten, red);
-	Shapes::Rectangle box4(offset4, offset4 + ten, red);
-	Shapes::Rectangle box5(offset5, offset5 + ten, red);
-	Shapes::Rectangle box6(offset6, offset6 + ten, red);
-	Shapes::Rectangle box7(offset7, offset7 + ten, red);
-	Shapes::Rectangle box8(offset8, offset8 + ten, red);
-	sudsy::Text debuginfo("", corner, red);
+	Shapes::Rectangle r(ten, 50, 50, red);
+	Shapes::Rectangle crosshairvert(pd::VEC2ZERO,2,40,red);
+	Shapes::Rectangle crosshairhorz(pd::VEC2ZERO,40,2,red);
+
+	r.SetMoveable(true);
+	r.SetLockedToScreen(true);
+
+	sudsy::Text debuginfo("", corner, pd::COLOR_WHITE);
 
 	sudsy::Init();
 
+	ScreenPos stupid;
 	while (true) {
-		debuginfo = ("Average Time: " + std::to_string(sudsy::avg));
+		stupid.start = sudsy::WRes/2;
+		//debuginfo = sudsy::WRes;
+		crosshairvert.SetPos(stupid);
+		crosshairhorz.SetPos(stupid);
 		Sleep(10);
 	}
 

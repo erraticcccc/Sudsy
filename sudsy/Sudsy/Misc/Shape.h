@@ -24,10 +24,9 @@ struct Shape : public Sudject {
 
 namespace sudsy {
 	inline float avg = 0;
+	inline Vec2 WRes(0);
 }
 
-static int count = 0;
-static float total = 0;
 namespace Shapes {
 	struct Line : public Shape {
 		Vec2 start, end;
@@ -107,55 +106,64 @@ namespace Shapes {
 			end += dir;
 		}
 		void Rescale(ScreenPos & ratio) {};
+		void SetLockedToScreen(bool c) { lockedToBorders = c; }
+		bool IsLockedToScreen(bool c) { return lockedToBorders; }
 	};
 	struct Rectangle : public Shape {
-		Vec2 tl, tr, bl, br; // Top left, top right, bottom left, bottom right
+		Vec2 pos;
+		float w, h;
+		float w2, h2;
 		float linethickness = 0.f; // only useful if unfilled/outline
 		Color color = pd::COLOR_WHITE, outlinecol = pd::COLOR_WHITE;
 		Alignment alignment = ALIGN_LEFT;
 		int outlineoffset = 0;
 		bool filled = true, outline = false;
 		D3DXVECTOR2 line[2];
-		Rectangle() : tl(pd::VEC2ZERO), tr(pd::VEC2ZERO), bl(pd::VEC2ZERO), br(pd::VEC2ZERO) {}
-		Rectangle(Vec2 topleft, Vec2 bottomright) : tl(topleft), br(bottomright), bl(topleft.x, bottomright.y), tr(bottomright.x, topleft.y) {}
-		Rectangle(Vec2 topleft, Vec2 bottomright, Color col) : color(col), tl(topleft), br(bottomright), bl(topleft.x, bottomright.y), tr(bottomright.x, topleft.y) {}
+		Rectangle() : pos(pd::VEC2ZERO), w(0), h(0), w2(0), h2(0) {}
+		Rectangle(Vec2 p, float wid, float hei) : pos(p), w(wid), h(hei), w2(w/2), h2(h/2) {}
+		Rectangle(Vec2 p, float wid, float hei, Color col) : pos(p), w(wid), h(hei), w2(w / 2), h2(h / 2), color(col) {}
 		Type GetType() { return S_SHAPE; }
 		void SetColor(const Color& col) { color = col; }
 		Color GetColor() { return color; }
-		ScreenPos GetPos() { return ScreenPos(tl, br); }
+		ScreenPos GetPos() {
+			Vec2 tl(pos.x - w / 2, pos.y - h / 2);
+			Vec2 br(pos.x + w / 2, pos.y + h / 2);
+			return ScreenPos(tl,br); 
+		}
 		float Area() {
-			return ((tr.x - tl.x) * (bl.y - tl.y));
+			return w*h;
 		}
 		void SetThickness(float thickness) {}
 		void SetFilled(bool filled) {}
 		void SetPos(ScreenPos& scr) { 
-			tl = scr.start;
-			br = scr.end;
-			tr = (br.x, tl.y);
-			bl = (tl.x, br.y);
+			pos = scr.start; // stupid way of doing it
 		}
-		void Move(Vec2 dir) { 
-			tl += dir;
-			tr += dir;
-			bl += dir;
-			br += dir;
+		void SetDims(float wid, float hei) {
+			w = wid;
+			h = hei;
+			w2 = wid / 2;
+			h2 = hei / 2;
+		}
+		void Move(Vec2 dir) {
+			pos += dir;
+			if (lockedToBorders) {
+				pos.x = _fclamp(pos.x, sudsy::WRes.x - w2, w2);
+				pos.y = _fclamp(pos.y, sudsy::WRes.y - h, h2);
+			}
 		}
 		bool Valid() {
 			if (parent) {
-				return ((tl != pd::VEC2ZERO) && (br != pd::VEC2ZERO));
+				return (pos != pd::VEC2ZERO && !(w||h));
 			}
 			else {
-				return tl.distance(br) > 0;
+				return (w != 0 && h != 0);
 			}
 		}
 		void SetVisible(bool v) {
 			visible = v;
 		}
 		void Rescale(ScreenPos &ratio) {
-			tl *= ratio.start.x;
-			bl *= ratio.end.x;
-			tr *= ratio.start.y;
-			br *= ratio.end.y;
+			
 		}
 		inline void Draw() {
 			if (!Valid()) { return; }
@@ -163,21 +171,16 @@ namespace Shapes {
 
 			static ID3DXLine* pLine = nullptr;
 
-			auto start = std::chrono::high_resolution_clock::now();
-
 			if (!pLine)
 				D3DXCreateLine(Sudevice, &pLine);
-
-			float width = bl.y - tl.y;
-			float midy = tl.y + width * 0.5;
 
 			if (parent && parent->GetType() == S_SHAPE) {
 				ScreenPos pp = parent->GetPos();
 				switch (alignment) {
 				case ALIGN_LEFT: {
-					line[0] = D3DXVECTOR2(tl.x + pp.start.x, midy);
-					line[1] = D3DXVECTOR2(tr.x + pp.start.x, midy);
-					pLine->SetWidth(width);
+					line[0] = D3DXVECTOR2(pos.x + pp.start.x - w2, pos.y);
+					line[1] = D3DXVECTOR2(pos.x + pp.start.x + w2, pos.y);
+					pLine->SetWidth(h);
 					pLine->Draw(line, 2, color.DirectX());
 					break;
 				}
@@ -185,29 +188,23 @@ namespace Shapes {
 
 					break;
 				default: { // = ALIGN_LEFT
-					line[0] = D3DXVECTOR2(tl.x + pp.start.x, midy);
-					line[1] = D3DXVECTOR2(tr.x + pp.start.x, midy);
-					pLine->SetWidth(width);
+					line[0] = D3DXVECTOR2(pos.x + pp.start.x - w2, pos.y);
+					line[1] = D3DXVECTOR2(pos.x + pp.start.x + w2, pos.y);
+					pLine->SetWidth(h);
 					pLine->Draw(line, 2, color.DirectX());
 					break;
 				}
 				}
 			}
 			else {
-				line[0] = D3DXVECTOR2(tl.x, midy);
-				line[1] = D3DXVECTOR2(tr.x, midy);
-				pLine->SetWidth(width);
+				line[0] = D3DXVECTOR2(pos.x - w2, pos.y);
+				line[1] = D3DXVECTOR2(pos.x + w2, pos.y);
+				pLine->SetWidth(h);
 				pLine->Draw(line, 2, color.DirectX());
-			}
-			auto end = std::chrono::high_resolution_clock::now();
-
-			std::chrono::duration<float, std::micro> t = end - start;
-
-			if (count > 100) { count = 0; total = 0; }
-			count++;
-			total += t.count();
-			sudsy::avg = total / count;
+			}	
 		}
+		void SetLockedToScreen(bool c) { lockedToBorders = c; }
+		bool IsLockedToScreen(bool c) { return lockedToBorders; }
 	};
 	struct Circle : public Shape {
 		Vec2 center = pd::VEC2ZERO;
@@ -271,7 +268,8 @@ namespace Shapes {
 		void SetFilled(bool filled) { this->filled = filled; }
 		void SetPos(ScreenPos& scr) { center = scr.start; }
 		void Move(Vec2 dir) { center += dir; }
-
+		void SetLockedToScreen(bool c) { lockedToBorders = c; }
+		bool IsLockedToScreen(bool c) { return lockedToBorders; }
 	};
 	struct Triangle : public Shape {
 		Vec2 a, b, c;
@@ -283,5 +281,7 @@ namespace Shapes {
 		Triangle(Vec2 p, float r) : a(p.x - r,p.y - r), b(p.x + r, p.y + r), c(p.x, p.y - r) {}
 		void SetPos() {}
 		void Move() {}
+		void SetLockedToScreen(bool c) { lockedToBorders = c; }
+		bool IsLockedToScreen(bool c) { return lockedToBorders; }
 	};
 }

@@ -64,6 +64,8 @@ namespace sudsy
 		void Rescale(ScreenPos& r) {
 			// unlikely to do anything!
 		}
+		void SetLockedToScreen(bool c) { lockedToBorders = c; }
+		bool IsLockedToScreen(bool c) { return lockedToBorders; }
 	public:
 		void operator=(std::string str)		{ content = str; }
 		void operator=(Vec2 vtostr)			{ content = (std::to_string(vtostr.x) + ", " + std::to_string(vtostr.y)); }

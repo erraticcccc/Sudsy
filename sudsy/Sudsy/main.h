@@ -28,13 +28,13 @@ namespace sudsy
 	class Colorpicker;
 	class Tab;
 	class Window;
-	inline Vec2 MousePos = { 0,0 };
+	inline Vec2 MousePos(0);
 	inline RECT WPos = { 0,0,0,0 };
 	inline HWND WHandle = NULL;
 	inline int test = 0;
 	inline bool MouseDown = false;
 	ScreenPos UpdateWindowPos();
-	Button* ProcessButtons();
+	Sudject* ProcessButtons();
 	void ProcessHotkey(int key);
 	void AddHotkey(int key, std::function <void()> func);
 	void Init();

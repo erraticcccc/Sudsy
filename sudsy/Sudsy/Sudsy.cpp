@@ -16,8 +16,8 @@ LRESULT CALLBACK wndProc(HWND h, UINT code, WPARAM wparam, LPARAM lparam) {
 			if (sudsy::MouseDown) { break; }
 			sudsy::MouseDown = true;
 			click = sudsy::lb;
-			sudsy::Button* b = sudsy::ProcessButtons();
-			if (b) { b->Click(click); }
+			sudsy::Button* b = (sudsy::Button*)sudsy::ProcessButtons();
+			if (b && b->GetType() == S_BUTTON) { b->Click(click); }
 			break;
 		}
 		case WM_LBUTTONUP: {
@@ -30,7 +30,7 @@ LRESULT CALLBACK wndProc(HWND h, UINT code, WPARAM wparam, LPARAM lparam) {
 		case WM_MOUSEMOVE: {
 			if (sudsy::MouseDown) {
 				click = sudsy::lb;
-				sudsy::Button* b = sudsy::ProcessButtons();
+				Sudject* b = sudsy::ProcessButtons();
 				if (!b) { break; }
 				if (!b->IsMoveable()) { break; }
 				Vec2 going = { (float)GET_X_LPARAM(lparam), (float)GET_Y_LPARAM(lparam) };
@@ -41,15 +41,16 @@ LRESULT CALLBACK wndProc(HWND h, UINT code, WPARAM wparam, LPARAM lparam) {
 			break;
 		}
 		case WM_RBUTTONDOWN: {
+			sudsy::MousePos = { (float)GET_X_LPARAM(lparam), (float)GET_Y_LPARAM(lparam) };
 			click = sudsy::rb;
-			sudsy::Button* b = sudsy::ProcessButtons();
-			if (b) { b->Click(click); }
+			sudsy::Button* b = (sudsy::Button*)sudsy::ProcessButtons();
+			if (b && b->GetType() == S_BUTTON) { b->Click(click); }
 			break;
 		}
 		case WM_MBUTTONDOWN: {
 			click = sudsy::mb;
-			sudsy::Button* b = sudsy::ProcessButtons();
-			if (b) { b->Click(click); }
+			sudsy::Button* b = (sudsy::Button*)sudsy::ProcessButtons();
+			if (b && b->GetType() == S_BUTTON) { b->Click(click); }
 			break;
 		}
 		case WM_SIZE: {
@@ -211,18 +212,18 @@ ScreenPos sudsy::UpdateWindowPos() {
 	ScreenPos p;
 	p.start = { (float)r.left, (float)r.right };
 	p.end = { (float)r.top, (float)r.bottom };
+	sudsy::WRes = Vec2(r.right - r.left, r.bottom - r.top);
 	return p;
 }
 
-sudsy::Button* sudsy::ProcessButtons() {
+Sudject* sudsy::ProcessButtons() {
 	if (sudjects.empty()) { return nullptr; } // Somethings wrong || there is no buttons anyway
 	for (Sudject *& sud : sudjects) {
 		if (!sud->Valid()) { continue; }
 		if (!sud->IsVisible()) { continue; }
-		if (sud->GetType() != S_BUTTON) { continue; }
 		ScreenPos p = sud->GetPos();
 		if (!sudsy::MousePos.Bounds(p.start, p.end)) { continue; }
-		return (Button*)sud;
+		return sud;
 	}
 	return nullptr;
 }
@@ -240,14 +241,28 @@ void sudsy::ProcessHotkey(int key) {
 	}
 }
 
-
+static int count = 0;
+static float total = 0;
 HRESULT __stdcall RenderScene(IDirect3DDevice9* pDevice) {
 
 	Sudevice = pDevice;
 
-	if (!sudsy::WPos.left) { sudsy::UpdateWindowPos(); }
+	if (!sudsy::WPos.left) { 
+		sudsy::UpdateWindowPos(); 
+	}
+
+	auto start = std::chrono::high_resolution_clock::now();
 
 	sudsy::Render();
+
+	auto end = std::chrono::high_resolution_clock::now();
+
+	std::chrono::duration<float, std::micro> t = end - start;
+
+	//if (count > 100) { count = 0; total = 0; }
+	count++;
+	total += t.count();
+	sudsy::avg = total / count;
 
 	return oEndScene(pDevice);
 }

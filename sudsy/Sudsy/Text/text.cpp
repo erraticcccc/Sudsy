@@ -25,10 +25,13 @@ namespace sudsy
 			case ALIGN_LEFT: {
 				SetRect(&r, p.start.x + pos.x, p.start.y + pos.y, content.length() * 4, 5);
 				font.self->DrawText(NULL, content.c_str(), -1, &r, DT_LEFT | DT_NOCLIP, fontcolor.DirectX());
-			}
-			default:
 				break;
-		}
+			}
+			default: {
+				break;
+			}
+			}
+
 		}
 	}
 	bool Text::Valid() {

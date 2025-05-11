@@ -30,6 +30,28 @@ inline float _fclmp(float to, float max, float min) {
 	return to;
 }
 
+// Int Clamp
+inline int _clamp(int to, int max, int min) {
+	if (to > max) {
+		return max;
+	}
+	if (to < min) {
+		return min;
+	}
+	return to;
+}
+
+// Float Clamp
+inline float _fclamp(float to, float max, float min) {
+	if (to > max) {
+		return max;
+	}
+	if (to < min) {
+		return min;
+	}
+	return to;
+}
+
 inline void bounds(float boundsmin, float boundsmax, float pos, bool& b) {
 	if (boundsmax < pos) {
 		b = false;
@@ -219,6 +241,9 @@ struct Vec2
 			return Vec2(x / v, y / v);
 
 		return *this;
+	}
+	Vec2 operator*(float v) {
+		return Vec2(x * v, y * v);
 	}
 	void operator*=(float v) {
 		x *= v;

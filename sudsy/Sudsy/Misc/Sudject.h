@@ -20,6 +20,7 @@ protected:
 	std::vector <Sudject*> children;
 	Sudject *self = this;
 	bool moveable = false;
+	bool lockedToBorders = true;
 public:
 	Sudject() {
 		parent = nullptr;
@@ -66,5 +67,7 @@ public:
 	virtual void SetVisible(bool vis) = 0;
 	virtual bool IsMoveable() { return moveable; }
 	virtual void SetMoveable(bool p) { moveable = p; }
+	virtual void SetLockedToScreen(bool c) { lockedToBorders = c; }
+	virtual bool IsLockedToScreen(bool c) { return lockedToBorders; }
 	virtual void Rescale(ScreenPos& ratios) = 0;
 };
