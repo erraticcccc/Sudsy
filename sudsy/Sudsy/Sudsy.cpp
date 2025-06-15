@@ -241,8 +241,6 @@ void sudsy::ProcessHotkey(int key) {
 	}
 }
 
-static int count = 0;
-static float total = 0;
 HRESULT __stdcall RenderScene(IDirect3DDevice9* pDevice) {
 
 	Sudevice = pDevice;
@@ -251,18 +249,8 @@ HRESULT __stdcall RenderScene(IDirect3DDevice9* pDevice) {
 		sudsy::UpdateWindowPos(); 
 	}
 
-	auto start = std::chrono::high_resolution_clock::now();
-
 	sudsy::Render();
 
-	auto end = std::chrono::high_resolution_clock::now();
-
-	std::chrono::duration<float, std::micro> t = end - start;
-
-	//if (count > 100) { count = 0; total = 0; }
-	count++;
-	total += t.count();
-	sudsy::avg = total / count;
-
 	return oEndScene(pDevice);
+
 }

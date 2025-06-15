@@ -7,7 +7,6 @@ namespace sudsy {
 		sudsy::Text text;
 	public:
 		std::function<void(sudsy::clicks)> Click = nullptr;
-		std::function<void(sudsy::clicks)> Paint = [](sudsy::clicks = none) -> void {};
 		Button() : text("") {}
 		Button(std::string content) : text(content) {}
 		Button(std::string content, Shape& shape) : text(content) {
@@ -22,7 +21,7 @@ namespace sudsy {
 		Shape* GetShape() { if (!children.empty()) { return (Shape*)children[0]; } else { return nullptr; } }
 		Type GetType() { return S_BUTTON; }
 		void Draw() {};
-		bool Valid() { return (Click && Paint && GetChild(0)); }
+		bool Valid() { return (Click && GetChild(0)); }
 		void SetPos(ScreenPos& dir) { GetShape()->SetPos(dir); }
 		void Move(Vec2 dir) { GetShape()->Move(dir); }
 		void SetClickFunction(std::function<void(sudsy::clicks)> f) { Click = f; }
